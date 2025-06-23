@@ -1,0 +1,13 @@
+#include "include/game.h"
+#include "include/memory.h"
+
+int main(void) {
+  Result result = game_create();
+  if (result.code == ERR_OK) {
+    Game *game = result.data;
+    game_run(game);
+    game_destroy(&game);
+  }
+
+  return 0;
+}
