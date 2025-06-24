@@ -3,16 +3,17 @@
 
 #include "config.h"
 #include "memory.h"
+#include "screen.h"
 
 typedef struct {
-  // TODO
+  Screen *screen;
 } Game;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-AC Result game_create(void);
+AC ResultMemory game_create(void);
 
 AC void game_run(Game *const game);
 
