@@ -2,6 +2,7 @@
 #include "include/config.h"
 #include "include/memory.h"
 #include "include/raylib.h"
+#include "include/screen.h"
 
 #include <stddef.h>
 
@@ -15,6 +16,11 @@ extern "C" {
 static void _init_window(void);
 static void _destroy_elements(Game **const ptr);
 
+static void _load_screen(Game *game, ScreenType type);
+static void _unload_screen(Game *game);
+static void _update_screen(Game *const game);
+static void _draw_screen(Game *const game);
+
 #if defined(__cplusplus)
 }
 #endif
@@ -24,18 +30,26 @@ static void _destroy_elements(Game **const ptr);
 // *************************************************
 AC Result game_create(void) {
   Result result = memory_make_alloc(sizeof(Game));
-  if (result.code == ERR_OK) {
+  if (result.code == ERROR_CODE_OK) {
     _init_window();
+    ((Game *)result.data)->currentScreen = NULL;
+    _load_screen(result.data, SCREEN_TYPE_MENU);
+    if (((Game *)result.data)->currentScreen == NULL) {
+      void *tmp = result.data;
+      memory_free_container(&tmp);
+      result.data = NULL;
+    }
   }
 
   return result;
 }
 
-AC void game_run(Game *const game) {
+AC void game_run(Game *game) {
   while (!WindowShouldClose()) {
+    _update_screen(game);
     BeginDrawing();
     ClearBackground(SKYBLUE);
-    // TODO
+    _draw_screen(game);
     EndDrawing();
   }
 }
@@ -48,7 +62,7 @@ AC void game_destroy(Game **const ptr) {
 // *************************************************
 // Static functions implementation.
 // *************************************************
-void _init_window(void) {
+static void _init_window(void) {
 #if defined(AC_DEBUG)
   SetTraceLogLevel(LOG_DEBUG);
 #endif
@@ -56,9 +70,78 @@ void _init_window(void) {
   SetTargetFPS(AC_SCREEN_FPS);
 }
 
-void _destroy_elements(Game **const ptr) {
-  if (ptr && *ptr) {
-    MemFree(*ptr);
-    *ptr = NULL;
+static void _destroy_elements(Game **const ptr) {
+  void *tmp = *ptr;
+  memory_free_container(&tmp);
+}
+
+static void _load_screen(Game *game, ScreenType type) {
+  Result result = {0};
+
+  switch (type) {
+  case SCREEN_TYPE_MENU:
+    result = menu_screen_create();
+    break;
+  case SCREEN_TYPE_CANVAS:
+    result = canvas_screen_create();
+    break;
+  default:
+    break;
+  }
+
+  if (result.code == ERROR_CODE_OK) {
+    game->currentScreen = result.data;
+  }
+}
+
+static void _unload_screen(Game *game) {
+  if (game->currentScreen != NULL) {
+    Screen *screen = game->currentScreen;
+
+    switch (screen->type) {
+    case SCREEN_TYPE_MENU:
+      menu_screen_destroy(&screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_destroy(&screen);
+      break;
+    default:
+      break;
+    }
+    game->currentScreen = NULL;
+  }
+}
+
+static void _update_screen(Game *const game) {
+  if (game->currentScreen != NULL) {
+    Screen *screen = game->currentScreen;
+
+    switch (screen->type) {
+    case SCREEN_TYPE_MENU:
+      menu_screen_update(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_update(screen);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+static void _draw_screen(Game *const game) {
+  if (game->currentScreen != NULL) {
+    Screen *screen = game->currentScreen;
+
+    switch (screen->type) {
+    case SCREEN_TYPE_MENU:
+      menu_screen_draw(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_draw(screen);
+      break;
+    default:
+      break;
+    }
   }
 }

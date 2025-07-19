@@ -4,12 +4,13 @@
 #include "raylib.h"
 
 typedef enum {
-  ERR_OK = 0,
-  ERR_NULL_POINTER,
-  ERR_OUT_OF_MEMORY,
-  ERR_FILE_NOT_FOUND,
-  ERR_INVALID_ARGUMENT,
-  ERR_UNKNOWN
+  ERROR_CODE_UNDEFINED = 0,
+  ERROR_CODE_OK,
+  ERROR_CODE_NULL_POINTER,
+  ERROR_CODE_OUT_OF_MEMORY,
+  ERROR_CODE_FILE_NOT_FOUND,
+  ERROR_CODE_INVALID_ARGUMENT,
+  ERROR_CODE_UNKNOWN
 } ErrorCode;
 
 typedef struct {
@@ -22,6 +23,8 @@ extern "C" {
 #endif
 
 Result memory_make_alloc(unsigned int size);
+
+void memory_free_container(void **const ptr);
 
 #if defined(__cplusplus)
 }

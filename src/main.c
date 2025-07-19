@@ -3,7 +3,7 @@
 
 int main(void) {
   Result result = game_create();
-  if (result.code == ERR_OK) {
+  if (result.code == ERROR_CODE_OK) {
     Game *game = result.data;
     game_run(game);
     game_destroy(&game);
