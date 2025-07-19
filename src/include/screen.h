@@ -5,7 +5,7 @@
 #include "memory.h"
 
 typedef enum {
-  SCREEN_TYPE_EMPTY = 0,
+  SCREEN_TYPE_UNDEFINED = 0,
   SCREEN_TYPE_MENU,
   SCREEN_TYPE_CANVAS,
 } ScreenType;
@@ -34,4 +34,4 @@ ScreenType canvas_screen_next_screen_type(void);
 }
 #endif
 
-#endif // AC_SCREEN_H
+#endif  // AC_SCREEN_H

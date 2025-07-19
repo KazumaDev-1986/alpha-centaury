@@ -15,7 +15,7 @@ extern "C" {
 
 AC Result game_create(void);
 
-AC void game_run(Game *game);
+AC void game_run(Game *const game);
 
 AC void game_destroy(Game **const ptr);
 
