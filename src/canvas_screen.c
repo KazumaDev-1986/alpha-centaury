@@ -17,6 +17,7 @@ static ScreenType _nextScreenType = SCREEN_TYPE_EMPTY;
 AC Result canvas_screen_create(void) {
   Result result = memory_make_alloc(sizeof(Screen));
   if (result.code == ERROR_CODE_OK) {
+    _nextScreenType = SCREEN_TYPE_EMPTY;
     ((Screen *)result.data)->type = SCREEN_TYPE_CANVAS;
   }
 
@@ -24,7 +25,9 @@ AC Result canvas_screen_create(void) {
 }
 
 AC void canvas_screen_update(Screen *const screen) {
-  // TODO
+  if (IsKeyPressed(KEY_F1)) {
+    _nextScreenType = SCREEN_TYPE_MENU;
+  }
 }
 
 AC void canvas_screen_draw(const Screen *const screen) { ClearBackground(RED); }

@@ -15,6 +15,7 @@ static ScreenType _nextScreenType = SCREEN_TYPE_EMPTY;
 Result menu_screen_create(void) {
   Result result = memory_make_alloc(sizeof(Screen));
   if (result.code == ERROR_CODE_OK) {
+    _nextScreenType = SCREEN_TYPE_EMPTY;
     ((Screen *)result.data)->type = SCREEN_TYPE_MENU;
   }
 
@@ -22,10 +23,12 @@ Result menu_screen_create(void) {
 }
 
 void menu_screen_update(Screen *const screen) {
-  // TODO
+  if (IsKeyPressed(KEY_F2)) {
+    _nextScreenType = SCREEN_TYPE_CANVAS;
+  }
 }
 
-void menu_screen_draw(const Screen *const screen) { ClearBackground(GREEN); }
+void menu_screen_draw(const Screen *const screen) { ClearBackground(SKYBLUE); }
 
 void menu_screen_destroy(Screen **const ptr) {
   void *tmp = *ptr;

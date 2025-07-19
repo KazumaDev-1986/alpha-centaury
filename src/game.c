@@ -18,7 +18,7 @@ static void _destroy_elements(Game **const ptr);
 
 static void _load_screen(Game *game, ScreenType type);
 static void _unload_screen(Game *game);
-static void _update_screen(Game *const game);
+static void _update_screen(Game *game);
 static void _draw_screen(Game *const game);
 
 #if defined(__cplusplus)
@@ -55,8 +55,8 @@ AC void game_run(Game *game) {
 }
 
 AC void game_destroy(Game **const ptr) {
-  CloseWindow();
   _destroy_elements(ptr);
+  CloseWindow();
 }
 
 // *************************************************
@@ -71,8 +71,11 @@ static void _init_window(void) {
 }
 
 static void _destroy_elements(Game **const ptr) {
-  void *tmp = *ptr;
-  memory_free_container(&tmp);
+  if (ptr && *ptr) {
+    _unload_screen(*ptr);
+    void *tmp = *ptr;
+    memory_free_container(&tmp);
+  }
 }
 
 static void _load_screen(Game *game, ScreenType type) {
@@ -112,19 +115,27 @@ static void _unload_screen(Game *game) {
   }
 }
 
-static void _update_screen(Game *const game) {
+static void _update_screen(Game *game) {
   if (game->currentScreen != NULL) {
     Screen *screen = game->currentScreen;
+    ScreenType newScreenType = SCREEN_TYPE_EMPTY;
 
     switch (screen->type) {
     case SCREEN_TYPE_MENU:
       menu_screen_update(screen);
+      newScreenType = menu_screen_next_screen_type();
       break;
     case SCREEN_TYPE_CANVAS:
       canvas_screen_update(screen);
+      newScreenType = canvas_screen_next_screen_type();
       break;
     default:
       break;
+    }
+
+    if (newScreenType != SCREEN_TYPE_EMPTY) {
+      _unload_screen(game);
+      _load_screen(game, newScreenType);
     }
   }
 }

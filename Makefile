@@ -17,6 +17,7 @@ else
 	ifeq ($(UNAMEOS),Linux)
 		RFLAGS = -lGL -lm -lpthread -ldl -lrt -lX11 
 		LIBSDIR =$(SRCDIR)/lib/linux 	
+		LINUX := $(shell uname)
 	endif
 	ifeq ($(UNAMEOS),Darwin)
 		RFLAGS = -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
@@ -24,7 +25,11 @@ else
 	endif
 endif
 
-LIBS		:= $(LIBSDIR)/libraylib.a
+ifdef LINUX
+	LIBS := -L$(LIBSDIR) -lraylib
+else
+	LIBS := $(LIBSDIR)/libraylib.a
+endif
 
 ifdef RELEASE
 	CFLAGS += -O3

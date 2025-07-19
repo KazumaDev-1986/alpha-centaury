@@ -8,8 +8,7 @@ Result memory_make_alloc(unsigned int size) {
   result.code = ERROR_CODE_OK;
 
   void *ptr = MemAlloc(size);
-  if (!ptr) {
-    TraceLog(LOG_DEBUG, "MemAlloc failed");
+  if (ptr == NULL) {
     result.code = ERROR_CODE_OUT_OF_MEMORY;
   } else {
     result.data = ptr;
