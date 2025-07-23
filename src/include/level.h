@@ -7,6 +7,7 @@
 AC typedef enum {
   LEVEL_TYPE_UNDEFINED = -1,
   LEVEL_TYPE_ONE,
+  LEVEL_TYPE_TWO,
 } LevelType;
 
 AC typedef struct {
@@ -17,10 +18,17 @@ AC typedef struct {
 extern "C" {
 #endif
 
-AC Result one_level_create();
+AC Result one_level_create(void);
 AC void one_level_update(Level *const level);
 AC void one_level_draw(const Level *const level);
-AC LevelType on_level_next(void);
+AC void one_level_destroy(Level *level);
+AC LevelType one_level_next(void);
+
+AC Result two_level_create(void);
+AC void two_level_update(Level *const level);
+AC void two_level_draw(const Level *const level);
+AC void two_level_destroy(Level *level);
+AC LevelType two_level_next(void);
 
 #if defined(__cplusplus)
 }

@@ -1,13 +1,23 @@
 #include <stddef.h>
 
-#include "include/memory.h"
-#include "include/raylib.h"
-#include "include/screen.h"
+#include "../include/memory.h"
+#include "../include/raylib.h"
+#include "../include/screen.h"
 
 // *************************************************
 // Static functions and variables definition.
 // *************************************************
 static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+AC static void _reset_variables(void);
+
+#if defined(__cplusplus)
+}
+#endif
 
 // *************************************************
 // Public functions implementation.
@@ -15,8 +25,9 @@ static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
 Result menu_screen_create(void) {
   Result result = memory_make_alloc(sizeof(Screen));
   if (result.code == ERROR_CODE_OK) {
-    _nextScreenType = SCREEN_TYPE_UNDEFINED;
+    _reset_variables();
     ((Screen *)result.data)->type = SCREEN_TYPE_MENU;
+    ((Screen *)result.data)->content = NULL;
   }
 
   return result;
@@ -36,3 +47,10 @@ void menu_screen_destroy(Screen **const ptr) {
 }
 
 ScreenType menu_screen_next_screen_type(void) { return _nextScreenType; }
+
+// *************************************************
+// Static functions definition.
+// *************************************************
+static void _reset_variables(void) {
+  _nextScreenType = SCREEN_TYPE_UNDEFINED;
+}

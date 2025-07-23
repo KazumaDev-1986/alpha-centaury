@@ -12,6 +12,7 @@ typedef enum {
 
 typedef struct {
   ScreenType type;
+  void *content;
 } Screen;
 
 #if defined(__cplusplus)
