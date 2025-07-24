@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 static void _init_window(void);
-static void _destroy_elements(Game **const ptr);
+static void _destroy_elements(Game *game);
 
 static void _load_screen(Game *const game, ScreenType type);
 static void _unload_screen(Game *const game);
@@ -54,8 +54,8 @@ AC void game_run(Game *const game) {
   }
 }
 
-AC void game_destroy(Game **const ptr) {
-  _destroy_elements(ptr);
+AC void game_destroy(Game *game) {
+  _destroy_elements(game);
   CloseWindow();
 }
 
@@ -70,12 +70,10 @@ static void _init_window(void) {
   SetTargetFPS(AC_SCREEN_FPS);
 }
 
-static void _destroy_elements(Game **const ptr) {
-  if (ptr && *ptr) {
-    _unload_screen(*ptr);
-    void *tmp = *ptr;
-    memory_free_container(&tmp);
-  }
+static void _destroy_elements(Game *game) {
+  _unload_screen(game);
+  void *tmp = game;
+  memory_free_container(&tmp);
 }
 
 static void _load_screen(Game *const game, ScreenType type) {
@@ -102,14 +100,14 @@ static void _unload_screen(Game *const game) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_destroy(&screen);
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_destroy(&screen);
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_destroy(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_destroy(screen);
+      break;
+    default:
+      break;
     }
     game->currentScreen = NULL;
   }

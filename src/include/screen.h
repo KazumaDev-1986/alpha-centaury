@@ -22,13 +22,13 @@ extern "C" {
 Result menu_screen_create(void);
 void menu_screen_update(Screen *const screen);
 void menu_screen_draw(const Screen *const screen);
-void menu_screen_destroy(Screen **const ptr);
+void menu_screen_destroy(Screen *screen);
 ScreenType menu_screen_next_screen_type(void);
 
 Result canvas_screen_create(void);
 void canvas_screen_update(Screen *const screen);
 void canvas_screen_draw(const Screen *const screen);
-void canvas_screen_destroy(Screen **const ptr);
+void canvas_screen_destroy(Screen *screen);
 ScreenType canvas_screen_next_screen_type(void);
 
 #if defined(__cplusplus)

@@ -6,7 +6,7 @@ int main(void) {
   if (result.code == ERROR_CODE_OK) {
     Game *game = result.data;
     game_run(game);
-    game_destroy(&game);
+    game_destroy(game);
   }
 
   return 0;

@@ -41,8 +41,8 @@ void menu_screen_update(Screen *const screen) {
 
 void menu_screen_draw(const Screen *const screen) { ClearBackground(SKYBLUE); }
 
-void menu_screen_destroy(Screen **const ptr) {
-  void *tmp = *ptr;
+void menu_screen_destroy(Screen *screen) {
+  void *tmp = screen;
   memory_free_container(&tmp);
 }
 
