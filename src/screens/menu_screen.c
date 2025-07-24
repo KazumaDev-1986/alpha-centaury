@@ -4,6 +4,10 @@
 #include "../include/raylib.h"
 #include "../include/screen.h"
 
+#if defined(AC_DEBUG)
+#include "../include/trace_utils.h"
+#endif
+
 // *************************************************
 // Static functions and variables definition.
 // *************************************************
@@ -28,6 +32,9 @@ Result menu_screen_create(void) {
     _reset_variables();
     ((Screen *)result.data)->type = SCREEN_TYPE_MENU;
     ((Screen *)result.data)->content = NULL;
+#if defined(AC_DEBUG)
+    trace_created("SCREEN", "Menu");
+#endif
   }
 
   return result;
@@ -44,6 +51,9 @@ void menu_screen_draw(const Screen *const screen) { ClearBackground(SKYBLUE); }
 void menu_screen_destroy(Screen *screen) {
   void *tmp = screen;
   memory_free_container(&tmp);
+#if defined(AC_DEBUG)
+  trace_destroyed("SCREEN", "Menu");
+#endif
 }
 
 ScreenType menu_screen_next_screen_type(void) { return _nextScreenType; }
@@ -51,6 +61,4 @@ ScreenType menu_screen_next_screen_type(void) { return _nextScreenType; }
 // *************************************************
 // Static functions definition.
 // *************************************************
-static void _reset_variables(void) {
-  _nextScreenType = SCREEN_TYPE_UNDEFINED;
-}
+static void _reset_variables(void) { _nextScreenType = SCREEN_TYPE_UNDEFINED; }

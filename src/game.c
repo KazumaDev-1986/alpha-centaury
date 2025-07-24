@@ -33,7 +33,7 @@ AC Result game_create(void) {
   if (result.code == ERROR_CODE_OK) {
     _init_window();
     ((Game *)result.data)->currentScreen = NULL;
-    _load_screen(result.data, SCREEN_TYPE_MENU);
+    _load_screen(result.data, SCREEN_TYPE_CANVAS);
     if (((Game *)result.data)->currentScreen == NULL) {
       void *tmp = result.data;
       memory_free_container(&tmp);
@@ -48,7 +48,6 @@ AC void game_run(Game *const game) {
   while (!WindowShouldClose()) {
     _update_screen(game);
     BeginDrawing();
-    ClearBackground(SKYBLUE);
     _draw_screen(game);
     EndDrawing();
   }
@@ -80,14 +79,14 @@ static void _load_screen(Game *const game, ScreenType type) {
   Result result = {0};
 
   switch (type) {
-    case SCREEN_TYPE_MENU:
-      result = menu_screen_create();
-      break;
-    case SCREEN_TYPE_CANVAS:
-      result = canvas_screen_create();
-      break;
-    default:
-      break;
+  case SCREEN_TYPE_MENU:
+    result = menu_screen_create();
+    break;
+  case SCREEN_TYPE_CANVAS:
+    result = canvas_screen_create();
+    break;
+  default:
+    break;
   }
 
   if (result.code == ERROR_CODE_OK) {
@@ -119,16 +118,16 @@ static void _update_screen(Game *const game) {
     ScreenType newScreenType = SCREEN_TYPE_UNDEFINED;
 
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_update(screen);
-        newScreenType = menu_screen_next_screen_type();
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_update(screen);
-        newScreenType = canvas_screen_next_screen_type();
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_update(screen);
+      newScreenType = menu_screen_next_screen_type();
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_update(screen);
+      newScreenType = canvas_screen_next_screen_type();
+      break;
+    default:
+      break;
     }
 
     if (newScreenType != SCREEN_TYPE_UNDEFINED) {
@@ -143,14 +142,14 @@ static void _draw_screen(const Game *const game) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_draw(screen);
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_draw(screen);
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_draw(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_draw(screen);
+      break;
+    default:
+      break;
     }
   }
 }
