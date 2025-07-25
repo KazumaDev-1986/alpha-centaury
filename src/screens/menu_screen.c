@@ -49,11 +49,13 @@ void menu_screen_update(Screen *const screen) {
 void menu_screen_draw(const Screen *const screen) { ClearBackground(SKYBLUE); }
 
 void menu_screen_destroy(Screen *screen) {
-  void *tmp = screen;
-  memory_free_container(&tmp);
+  if (screen != NULL) {
+    void *tmp = screen;
+    memory_free_container(&tmp);
 #if defined(AC_DEBUG)
-  trace_destroyed("SCREEN", "Menu");
+    trace_destroyed("SCREEN", "Menu");
 #endif
+  }
 }
 
 ScreenType menu_screen_next_screen_type(void) { return _nextScreenType; }

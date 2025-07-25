@@ -1,7 +1,7 @@
+#include <stddef.h>
+
 #include "include/memory.h"
 #include "include/raylib.h"
-
-#include <stddef.h>
 
 Result memory_make_alloc(unsigned int size) {
   Result result = {0};

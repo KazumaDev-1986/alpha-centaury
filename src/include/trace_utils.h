@@ -6,7 +6,8 @@ extern "C" {
 #endif
 
 void trace_created(const char *type, const char *name);
-void trace_destroyed(const char *type,const char *name);
+void trace_destroyed(const char *type, const char *name);
+void trace_game_error(void);
 
 #if defined(__cplusplus)
 }

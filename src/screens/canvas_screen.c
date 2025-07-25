@@ -21,7 +21,6 @@ extern "C" {
 #endif
 
 static void _keyboard_events(void);
-
 static void _load_level(Screen *const screen, LevelType type);
 static void _unload_level(Screen *const screen);
 static LevelType _update_level(Level *const level);
@@ -51,22 +50,28 @@ AC Result canvas_screen_create(void) {
 }
 
 AC void canvas_screen_update(Screen *const screen) {
-  _keyboard_events();
-  LevelType nextLevel = _update_level(screen->content);
-  _verify_and_change_level(screen, nextLevel);
+  if (screen != NULL) {
+    _keyboard_events();
+    LevelType nextLevel = _update_level(screen->content);
+    _verify_and_change_level(screen, nextLevel);
+  }
 }
 
 AC void canvas_screen_draw(const Screen *const screen) {
-  _draw_level(screen->content);
+  if (screen != NULL) {
+    _draw_level(screen->content);
+  }
 }
 
 AC void canvas_screen_destroy(Screen *screen) {
-  _unload_level(screen);
-  void *tmp = screen;
-  memory_free_container(&tmp);
+  if (screen != NULL) {
+    _unload_level(screen);
+    void *tmp = screen;
+    memory_free_container(&tmp);
 #if defined(AC_DEBUG)
-  trace_destroyed("SCREEN", "Canvas");
+    trace_destroyed("SCREEN", "Canvas");
 #endif
+  }
 }
 
 AC ScreenType canvas_screen_next_screen_type(void) { return _nextScreenType; }
@@ -81,24 +86,26 @@ static void _keyboard_events(void) {
 }
 
 static void _load_level(Screen *const screen, LevelType type) {
-  Result result = {0};
-  switch (type) {
-  case LEVEL_TYPE_ONE:
-    result = one_level_create();
-    break;
-  case LEVEL_TYPE_TWO:
-    result = two_level_create();
-    break;
-  default:
-    break;
-  }
+  if (screen != NULL) {
+    Result result = {0};
+    switch (type) {
+    case LEVEL_TYPE_ONE:
+      result = one_level_create();
+      break;
+    case LEVEL_TYPE_TWO:
+      result = two_level_create();
+      break;
+    default:
+      break;
+    }
 
-  if (result.code == ERROR_CODE_OK) {
-    screen->content = result.data;
+    if (result.code == ERROR_CODE_OK) {
+      screen->content = result.data;
+    }
   }
 }
 static void _unload_level(Screen *const screen) {
-  if (screen->content != NULL) {
+  if (screen != NULL && screen->content != NULL) {
     LevelType type = ((Level *)screen->content)->type;
     switch (type) {
     case LEVEL_TYPE_ONE:
@@ -132,6 +139,7 @@ static LevelType _update_level(Level *const level) {
       break;
     }
   }
+
   return nextLevelType;
 }
 
@@ -152,7 +160,7 @@ static void _draw_level(const Level *const level) {
 }
 
 static void _verify_and_change_level(Screen *const screen, LevelType type) {
-  if (type != LEVEL_TYPE_UNDEFINED) {
+  if (screen != NULL && type != LEVEL_TYPE_UNDEFINED) {
     _unload_level(screen);
     _load_level(screen, type);
   }

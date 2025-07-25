@@ -7,6 +7,7 @@
 
 typedef struct {
   Screen *currentScreen;
+  bool isRunning;
 } Game;
 
 #if defined(__cplusplus)

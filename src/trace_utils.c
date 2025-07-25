@@ -11,3 +11,7 @@ void trace_created(const char *type, const char *name) {
 void trace_destroyed(const char *type, const char *name) {
   TraceLog(LOG_DEBUG, ">> [%s] name: '%s' destroyed.", type, name);
 }
+
+void trace_game_error(void) {
+  TraceLog(LOG_DEBUG, ">> Error to initialize the game.");
+}

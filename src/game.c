@@ -7,7 +7,7 @@
 #include "include/screen.h"
 
 // *************************************************
-// Static functions definition.
+// Static functions && variables definition.
 // *************************************************
 #if defined(__cplusplus)
 extern "C" {
@@ -15,10 +15,13 @@ extern "C" {
 
 static void _init_window(void);
 static void _destroy_elements(Game *game);
-
+static void _update(Game *const game);
+static void _draw(const Game *const game);
+static void _keyboard_events(Game *const game);
 static void _load_screen(Game *const game, ScreenType type);
 static void _unload_screen(Game *const game);
-static void _update_screen(Game *const game);
+static ScreenType _update_screen(Game *const game);
+static void _change_next_screen(Game *const game, ScreenType type);
 static void _draw_screen(const Game *const game);
 
 #if defined(__cplusplus)
@@ -33,6 +36,7 @@ AC Result game_create(void) {
   if (result.code == ERROR_CODE_OK) {
     _init_window();
     ((Game *)result.data)->currentScreen = NULL;
+    ((Game *)result.data)->isRunning = true;
     _load_screen(result.data, SCREEN_TYPE_CANVAS);
     if (((Game *)result.data)->currentScreen == NULL) {
       void *tmp = result.data;
@@ -45,11 +49,9 @@ AC Result game_create(void) {
 }
 
 AC void game_run(Game *const game) {
-  while (!WindowShouldClose()) {
-    _update_screen(game);
-    BeginDrawing();
-    _draw_screen(game);
-    EndDrawing();
+  while (game->isRunning) {
+    _update(game);
+    _draw(game);
   }
 }
 
@@ -70,32 +72,54 @@ static void _init_window(void) {
 }
 
 static void _destroy_elements(Game *game) {
-  _unload_screen(game);
-  void *tmp = game;
-  memory_free_container(&tmp);
+  if (game != NULL) {
+    _unload_screen(game);
+    void *tmp = game;
+    memory_free_container(&tmp);
+  }
+}
+
+static void _update(Game *const game) {
+  ScreenType newScreen = _update_screen(game);
+  _change_next_screen(game, newScreen);
+  _keyboard_events(game);
+}
+
+static void _draw(const Game *const game) {
+  BeginDrawing();
+  _draw_screen(game);
+  EndDrawing();
+}
+
+static void _keyboard_events(Game *const game) {
+  if (IsKeyPressed(KEY_ESCAPE)) {
+    game->isRunning = false;
+  }
 }
 
 static void _load_screen(Game *const game, ScreenType type) {
-  Result result = {0};
+  if (game != NULL) {
+    Result result = {0};
 
-  switch (type) {
-  case SCREEN_TYPE_MENU:
-    result = menu_screen_create();
-    break;
-  case SCREEN_TYPE_CANVAS:
-    result = canvas_screen_create();
-    break;
-  default:
-    break;
-  }
+    switch (type) {
+    case SCREEN_TYPE_MENU:
+      result = menu_screen_create();
+      break;
+    case SCREEN_TYPE_CANVAS:
+      result = canvas_screen_create();
+      break;
+    default:
+      break;
+    }
 
-  if (result.code == ERROR_CODE_OK) {
-    game->currentScreen = result.data;
+    if (result.code == ERROR_CODE_OK) {
+      game->currentScreen = result.data;
+    }
   }
 }
 
 static void _unload_screen(Game *const game) {
-  if (game->currentScreen != NULL) {
+  if (game != NULL && game->currentScreen != NULL) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
@@ -112,33 +136,37 @@ static void _unload_screen(Game *const game) {
   }
 }
 
-static void _update_screen(Game *const game) {
-  if (game->currentScreen != NULL) {
+static ScreenType _update_screen(Game *const game) {
+  ScreenType newScreen = SCREEN_TYPE_UNDEFINED;
+  if (game != NULL && game->currentScreen != NULL) {
     Screen *screen = game->currentScreen;
-    ScreenType newScreenType = SCREEN_TYPE_UNDEFINED;
 
     switch (screen->type) {
     case SCREEN_TYPE_MENU:
       menu_screen_update(screen);
-      newScreenType = menu_screen_next_screen_type();
+      newScreen = menu_screen_next_screen_type();
       break;
     case SCREEN_TYPE_CANVAS:
       canvas_screen_update(screen);
-      newScreenType = canvas_screen_next_screen_type();
+      newScreen = canvas_screen_next_screen_type();
       break;
     default:
       break;
     }
+  }
 
-    if (newScreenType != SCREEN_TYPE_UNDEFINED) {
-      _unload_screen(game);
-      _load_screen(game, newScreenType);
-    }
+  return newScreen;
+}
+
+static void _change_next_screen(Game *const game, ScreenType type) {
+  if (game != NULL && type != SCREEN_TYPE_UNDEFINED) {
+    _unload_screen(game);
+    _load_screen(game, type);
   }
 }
 
 static void _draw_screen(const Game *const game) {
-  if (game->currentScreen != NULL) {
+  if (game != NULL && game->currentScreen != NULL) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
