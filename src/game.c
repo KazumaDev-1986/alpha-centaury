@@ -15,14 +15,14 @@ extern "C" {
 
 static void _init_window(void);
 static void _destroy_elements(Game *game);
-static void _update(Game *const game);
-static void _draw(const Game *const game);
+static void _update_game(Game *const game);
+static void _draw_game(const Game *const game);
 static void _keyboard_events(Game *const game);
 static void _load_screen(Game *const game, ScreenType type);
 static void _unload_screen(Game *const game);
-static ScreenType _update_screen(Game *const game);
+static ScreenType _update_screen(Screen *const screen);
+static void _draw_screen(const Screen *const screen);
 static void _change_next_screen(Game *const game, ScreenType type);
-static void _draw_screen(const Game *const game);
 
 #if defined(__cplusplus)
 }
@@ -31,7 +31,7 @@ static void _draw_screen(const Game *const game);
 // *************************************************
 // Public functions implementation.
 // *************************************************
-AC Result game_create(void) {
+Result game_create(void) {
   Result result = memory_make_alloc(sizeof(Game));
   if (result.code == ERROR_CODE_OK) {
     _init_window();
@@ -48,14 +48,14 @@ AC Result game_create(void) {
   return result;
 }
 
-AC void game_run(Game *const game) {
+void game_run(Game *const game) {
   while (game->isRunning) {
-    _update(game);
-    _draw(game);
+    _update_game(game);
+    _draw_game(game);
   }
 }
 
-AC void game_destroy(Game *game) {
+void game_destroy(Game *game) {
   _destroy_elements(game);
   CloseWindow();
 }
@@ -79,16 +79,20 @@ static void _destroy_elements(Game *game) {
   }
 }
 
-static void _update(Game *const game) {
-  ScreenType newScreen = _update_screen(game);
-  _change_next_screen(game, newScreen);
-  _keyboard_events(game);
+static void _update_game(Game *const game) {
+  if (game != NULL) {
+    ScreenType newScreen = _update_screen(game->currentScreen);
+    _change_next_screen(game, newScreen);
+    _keyboard_events(game);
+  }
 }
 
-static void _draw(const Game *const game) {
-  BeginDrawing();
-  _draw_screen(game);
-  EndDrawing();
+static void _draw_game(const Game *const game) {
+  if (game != NULL) {
+    BeginDrawing();
+    _draw_screen(game->currentScreen);
+    EndDrawing();
+  }
 }
 
 static void _keyboard_events(Game *const game) {
@@ -102,14 +106,14 @@ static void _load_screen(Game *const game, ScreenType type) {
     Result result = {0};
 
     switch (type) {
-    case SCREEN_TYPE_MENU:
-      result = menu_screen_create();
-      break;
-    case SCREEN_TYPE_CANVAS:
-      result = canvas_screen_create();
-      break;
-    default:
-      break;
+      case SCREEN_TYPE_MENU:
+        result = menu_screen_create();
+        break;
+      case SCREEN_TYPE_CANVAS:
+        result = canvas_screen_create();
+        break;
+      default:
+        break;
     }
 
     if (result.code == ERROR_CODE_OK) {
@@ -123,61 +127,57 @@ static void _unload_screen(Game *const game) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
-    case SCREEN_TYPE_MENU:
-      menu_screen_destroy(screen);
-      break;
-    case SCREEN_TYPE_CANVAS:
-      canvas_screen_destroy(screen);
-      break;
-    default:
-      break;
+      case SCREEN_TYPE_MENU:
+        menu_screen_destroy(screen);
+        break;
+      case SCREEN_TYPE_CANVAS:
+        canvas_screen_destroy(screen);
+        break;
+      default:
+        break;
     }
     game->currentScreen = NULL;
   }
 }
 
-static ScreenType _update_screen(Game *const game) {
-  ScreenType newScreen = SCREEN_TYPE_UNDEFINED;
-  if (game != NULL && game->currentScreen != NULL) {
-    Screen *screen = game->currentScreen;
-
+static ScreenType _update_screen(Screen *const screen) {
+  ScreenType nextScreenType = SCREEN_TYPE_UNDEFINED;
+  if (screen != NULL) {
     switch (screen->type) {
-    case SCREEN_TYPE_MENU:
-      menu_screen_update(screen);
-      newScreen = menu_screen_next_screen_type();
-      break;
-    case SCREEN_TYPE_CANVAS:
-      canvas_screen_update(screen);
-      newScreen = canvas_screen_next_screen_type();
-      break;
-    default:
-      break;
+      case SCREEN_TYPE_MENU:
+        menu_screen_update(screen);
+        nextScreenType = menu_screen_next_screen_type();
+        break;
+      case SCREEN_TYPE_CANVAS:
+        canvas_screen_update(screen);
+        nextScreenType = canvas_screen_next_screen_type();
+        break;
+      default:
+        break;
     }
   }
 
-  return newScreen;
+  return nextScreenType;
+}
+
+static void _draw_screen(const Screen *const screen) {
+  if (screen != NULL) {
+    switch (screen->type) {
+      case SCREEN_TYPE_MENU:
+        menu_screen_draw(screen);
+        break;
+      case SCREEN_TYPE_CANVAS:
+        canvas_screen_draw(screen);
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 static void _change_next_screen(Game *const game, ScreenType type) {
   if (game != NULL && type != SCREEN_TYPE_UNDEFINED) {
     _unload_screen(game);
     _load_screen(game, type);
-  }
-}
-
-static void _draw_screen(const Game *const game) {
-  if (game != NULL && game->currentScreen != NULL) {
-    Screen *screen = game->currentScreen;
-
-    switch (screen->type) {
-    case SCREEN_TYPE_MENU:
-      menu_screen_draw(screen);
-      break;
-    case SCREEN_TYPE_CANVAS:
-      canvas_screen_draw(screen);
-      break;
-    default:
-      break;
-    }
   }
 }

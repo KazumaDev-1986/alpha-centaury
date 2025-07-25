@@ -17,7 +17,7 @@ static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
 extern "C" {
 #endif
 
-AC static void _reset_variables(void);
+static void _reset_variables(void);
 
 #if defined(__cplusplus)
 }

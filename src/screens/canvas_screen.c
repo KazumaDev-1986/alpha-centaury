@@ -25,7 +25,7 @@ static void _load_level(Screen *const screen, LevelType type);
 static void _unload_level(Screen *const screen);
 static LevelType _update_level(Level *const level);
 static void _draw_level(const Level *const level);
-static void _verify_and_change_level(Screen *const screen, LevelType type);
+static void _change_next_level(Screen *const screen, LevelType type);
 
 #if defined(__cplusplus)
 }
@@ -34,7 +34,7 @@ static void _verify_and_change_level(Screen *const screen, LevelType type);
 // *************************************************
 // Public functions implementation.
 // *************************************************
-AC Result canvas_screen_create(void) {
+Result canvas_screen_create(void) {
   Result result = memory_make_alloc(sizeof(Screen));
   if (result.code == ERROR_CODE_OK) {
     _nextScreenType = SCREEN_TYPE_UNDEFINED;
@@ -49,21 +49,21 @@ AC Result canvas_screen_create(void) {
   return result;
 }
 
-AC void canvas_screen_update(Screen *const screen) {
+void canvas_screen_update(Screen *const screen) {
   if (screen != NULL) {
     _keyboard_events();
     LevelType nextLevel = _update_level(screen->content);
-    _verify_and_change_level(screen, nextLevel);
+    _change_next_level(screen, nextLevel);
   }
 }
 
-AC void canvas_screen_draw(const Screen *const screen) {
+void canvas_screen_draw(const Screen *const screen) {
   if (screen != NULL) {
     _draw_level(screen->content);
   }
 }
 
-AC void canvas_screen_destroy(Screen *screen) {
+void canvas_screen_destroy(Screen *screen) {
   if (screen != NULL) {
     _unload_level(screen);
     void *tmp = screen;
@@ -74,7 +74,7 @@ AC void canvas_screen_destroy(Screen *screen) {
   }
 }
 
-AC ScreenType canvas_screen_next_screen_type(void) { return _nextScreenType; }
+ScreenType canvas_screen_next_screen_type(void) { return _nextScreenType; }
 
 // *************************************************
 // Static functions implementation.
@@ -159,7 +159,7 @@ static void _draw_level(const Level *const level) {
   }
 }
 
-static void _verify_and_change_level(Screen *const screen, LevelType type) {
+static void _change_next_level(Screen *const screen, LevelType type) {
   if (screen != NULL && type != LEVEL_TYPE_UNDEFINED) {
     _unload_level(screen);
     _load_level(screen, type);

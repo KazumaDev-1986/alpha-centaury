@@ -25,7 +25,7 @@ static void _keyboard_events(void);
 // *************************************************
 // Public functions implementation.
 // *************************************************
-AC Result two_level_create(void) {
+Result two_level_create(void) {
   Result result = memory_make_alloc(sizeof(Level));
   if (result.code == ERROR_CODE_OK) {
     _reset_variables();
@@ -38,11 +38,11 @@ AC Result two_level_create(void) {
   return result;
 }
 
-AC void two_level_update(Level *const level) { _keyboard_events(); }
+void two_level_update(Level *const level) { _keyboard_events(); }
 
-AC void two_level_draw(const Level *const level) { ClearBackground(YELLOW); }
+void two_level_draw(const Level *const level) { ClearBackground(YELLOW); }
 
-AC void two_level_destroy(Level *level) {
+void two_level_destroy(Level *level) {
   void *ptr = level;
   memory_free_container(&ptr);
 #if defined(AC_DEBUG)
@@ -50,7 +50,7 @@ AC void two_level_destroy(Level *level) {
 #endif
 }
 
-AC LevelType two_level_next(void) { return _nextType; }
+LevelType two_level_next(void) { return _nextType; }
 
 // *************************************************
 // Static functions implementation.
