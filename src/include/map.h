@@ -9,8 +9,7 @@
 typedef struct {
   uint16_t width;
   uint16_t height;
-
-  uint32_t *vector;
+  uint32_t buffer[AC_BUFFER_SIZE];
 } Map;
 
 #if defined(__cplusplus)

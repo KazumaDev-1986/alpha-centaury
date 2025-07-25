@@ -4,21 +4,14 @@
 #include <stdint.h>
 
 #include "config.h"
+#include "map.h"
 
-// Maximum map size 16x16 == 256.
-#define AC_BUFFER_SIZE 256
-
-typedef struct {
-  uint16_t width;
-  uint16_t height;
-  uint32_t buffer[AC_BUFFER_SIZE];
-} FileReader;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-FileReader file_data(const char *fileName);
+AC Map get_map_file(const char *fileName);
 
 #if defined(__cplusplus)
 }

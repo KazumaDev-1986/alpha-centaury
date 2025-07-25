@@ -7,6 +7,7 @@
 #endif
 
 static LevelType _nextType = LEVEL_TYPE_UNDEFINED;
+static Color _backgroundColor = {0};
 
 // *************************************************
 // Static functions definition.
@@ -40,7 +41,9 @@ Result two_level_create(void) {
 
 void two_level_update(Level *const level) { _keyboard_events(); }
 
-void two_level_draw(const Level *const level) { ClearBackground(YELLOW); }
+void two_level_draw(const Level *const level) {
+  ClearBackground(_backgroundColor);
+}
 
 void two_level_destroy(Level *level) {
   void *ptr = level;
@@ -55,7 +58,10 @@ LevelType two_level_next(void) { return _nextType; }
 // *************************************************
 // Static functions implementation.
 // *************************************************
-static void _reset_variables(void) { _nextType = LEVEL_TYPE_UNDEFINED; }
+static void _reset_variables(void) {
+  _nextType = LEVEL_TYPE_UNDEFINED;
+  _backgroundColor = GetColor(AC_COLOR_0);
+}
 
 static void _keyboard_events(void) {
   if (IsKeyPressed(KEY_ONE)) {

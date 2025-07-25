@@ -12,6 +12,7 @@
 // Static functions and variables definition.
 // *************************************************
 static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
+static Color _backgroundColor = {0};
 
 #if defined(__cplusplus)
 extern "C" {
@@ -46,7 +47,9 @@ void menu_screen_update(Screen *const screen) {
   }
 }
 
-void menu_screen_draw(const Screen *const screen) { ClearBackground(SKYBLUE); }
+void menu_screen_draw(const Screen *const screen) {
+  ClearBackground(_backgroundColor);
+}
 
 void menu_screen_destroy(Screen *screen) {
   if (screen != NULL) {
@@ -63,4 +66,7 @@ ScreenType menu_screen_next_screen_type(void) { return _nextScreenType; }
 // *************************************************
 // Static functions definition.
 // *************************************************
-static void _reset_variables(void) { _nextScreenType = SCREEN_TYPE_UNDEFINED; }
+static void _reset_variables(void) {
+  _nextScreenType = SCREEN_TYPE_UNDEFINED;
+  _backgroundColor = GetColor(AC_COLOR_7);
+}
