@@ -92,7 +92,12 @@ static bool _read_token(char *line, Map *map) {
 
   uint16_t j = 0;
   while (!hasError && token != NULL) {
-    uint16_t *tmp = &map->buffer[map->height * map->width + j++];
+    size_t index = map->height * map->width + j++;
+    if (index >= AC_BUFFER_SIZE) {
+      hasError = true;
+      break;
+    }
+    uint16_t *tmp = &map->buffer[index];
     *tmp = TextToInteger(token);
     token = _strtok(NULL, ",", &context);
     if (map->height == 0) {
