@@ -5,13 +5,18 @@
 
 #include "config.h"
 #include "map.h"
+#include "memory.h"
 
+typedef struct {
+  Map map;
+  ErrorCode errorCode;
+} FileReader;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-AC Map get_map_file(const char *fileName);
+AC FileReader file_data(const char *fileName);
 
 #if defined(__cplusplus)
 }
