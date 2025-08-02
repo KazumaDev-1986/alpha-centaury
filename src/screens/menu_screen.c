@@ -14,15 +14,7 @@
 static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
 static Color _backgroundColor = {0};
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 static void _reset_variables(void);
-
-#if defined(__cplusplus)
-}
-#endif
 
 // *************************************************
 // Public functions implementation.

@@ -9,10 +9,6 @@
 // *************************************************
 // Static functions && variables definition.
 // *************************************************
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 static void _init_window(void);
 static void _destroy_elements(Game *game);
 static void _update_game(Game *const game);
@@ -23,10 +19,6 @@ static void _unload_screen(Game *const game);
 static ScreenType _update_screen(Screen *const screen);
 static void _draw_screen(const Screen *const screen);
 static void _change_next_screen(Game *const game, ScreenType type);
-
-#if defined(__cplusplus)
-}
-#endif
 
 // *************************************************
 // Public functions implementation.
@@ -106,14 +98,14 @@ static void _load_screen(Game *const game, ScreenType type) {
     Result result = {0};
 
     switch (type) {
-      case SCREEN_TYPE_MENU:
-        result = menu_screen_create();
-        break;
-      case SCREEN_TYPE_CANVAS:
-        result = canvas_screen_create();
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      result = menu_screen_create();
+      break;
+    case SCREEN_TYPE_CANVAS:
+      result = canvas_screen_create();
+      break;
+    default:
+      break;
     }
 
     if (result.code == ERROR_CODE_OK) {
@@ -127,14 +119,14 @@ static void _unload_screen(Game *const game) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_destroy(screen);
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_destroy(screen);
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_destroy(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_destroy(screen);
+      break;
+    default:
+      break;
     }
     game->currentScreen = NULL;
   }
@@ -144,16 +136,16 @@ static ScreenType _update_screen(Screen *const screen) {
   ScreenType nextScreenType = SCREEN_TYPE_UNDEFINED;
   if (screen != NULL) {
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_update(screen);
-        nextScreenType = menu_screen_next_screen_type();
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_update(screen);
-        nextScreenType = canvas_screen_next_screen_type();
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_update(screen);
+      nextScreenType = menu_screen_next_screen_type();
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_update(screen);
+      nextScreenType = canvas_screen_next_screen_type();
+      break;
+    default:
+      break;
     }
   }
 
@@ -163,14 +155,14 @@ static ScreenType _update_screen(Screen *const screen) {
 static void _draw_screen(const Screen *const screen) {
   if (screen != NULL) {
     switch (screen->type) {
-      case SCREEN_TYPE_MENU:
-        menu_screen_draw(screen);
-        break;
-      case SCREEN_TYPE_CANVAS:
-        canvas_screen_draw(screen);
-        break;
-      default:
-        break;
+    case SCREEN_TYPE_MENU:
+      menu_screen_draw(screen);
+      break;
+    case SCREEN_TYPE_CANVAS:
+      canvas_screen_draw(screen);
+      break;
+    default:
+      break;
     }
   }
 }

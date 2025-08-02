@@ -11,16 +11,8 @@ static Color _backgroundColor = {0};
 // *************************************************
 // Static functions definition.
 // *************************************************
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 static void _reset_variables(void);
 static void _keyboard_events(void);
-
-#if defined(__cplusplus)
-}
-#endif
 
 // *************************************************
 // Public functions implementation.

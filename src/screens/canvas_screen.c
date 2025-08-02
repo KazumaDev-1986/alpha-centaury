@@ -16,20 +16,12 @@
 // *************************************************
 static ScreenType _nextScreenType = SCREEN_TYPE_UNDEFINED;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 static void _keyboard_events(void);
 static void _load_level(Screen *const screen, LevelType type);
 static void _unload_level(Screen *const screen);
 static LevelType _update_level(Level *const level);
 static void _draw_level(const Level *const level);
 static void _change_next_level(Screen *const screen, LevelType type);
-
-#if defined(__cplusplus)
-}
-#endif
 
 // *************************************************
 // Public functions implementation.

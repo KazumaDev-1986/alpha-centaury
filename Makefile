@@ -6,7 +6,7 @@ C			:= gcc
 SRCDIR		:= src
 OBJDIR		:= obj
 INCDIR		:= -I$(SRCDIR)/include
-CFLAGS 		:= -Wall -pedantic
+CFLAGS      := -Wall -Wextra
 RFLAGS		:= -lopengl32 -lgdi32 -lwinmm 
 MKDIR		:= mkdir -p
 
@@ -32,10 +32,12 @@ else
 endif
 
 ifdef RELEASE
-	CFLAGS += -O3
+	CFLAGS += -O3 -march=native
 else
-	CFLAGS += -g
+	CFLAGS += -pedantic -g -fsanitize=address 
 endif
+
+CFLAGS += -std=c17
 
 CFILES 		:= $(shell find $(SRCDIR)/ -type f -iname *.c)
 OBJFILES	:= $(patsubst %.c,%.o,$(patsubst $(SRCDIR)%,$(OBJDIR)%,$(CFILES)))
