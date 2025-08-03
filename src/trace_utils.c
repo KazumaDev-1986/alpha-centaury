@@ -1,5 +1,7 @@
-#include "include/trace_utils.h"
+#include <stdint.h>
+
 #include "include/raylib.h"
+#include "include/trace_utils.h"
 
 // *************************************************
 // Public functions implementation.
@@ -20,6 +22,8 @@ void trace_file_not_found(const char *fileName) {
   TraceLog(LOG_DEBUG, ">> Error: file: %s not found.", fileName);
 }
 
-void trace_map_size_exceeds(const char *fileName) {
-  TraceLog(LOG_DEBUG, ">> Error: Map size exceeds: '%s'.", fileName);
+void trace_map_size_exceeds(const char *fileName, uint16_t height,
+                            uint16_t width) {
+  TraceLog(LOG_DEBUG, ">> Error: Map size exceeds:'%s', h:'%d', w:'%d' .",
+           fileName, height, width);
 }

@@ -9,14 +9,16 @@
 typedef struct {
   uint16_t width;
   uint16_t height;
-  int16_t buffer[AC_BUFFER_SIZE];
+  int16_t buffer[AC_MAX_BUFFER_SIZE];
 } Map;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+AC Map *map_load(const char *fileName);
 AC void map_draw(const Map *const map);
+AC void map_unload(Map *map);
 
 #if defined(__cplusplus)
 }

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "../include/level.h"
 #include "../include/memory.h"
 
@@ -22,6 +24,7 @@ Result one_level_create(void) {
   if (result.code == ERROR_CODE_OK) {
     _reset_variables();
     ((Level *)result.data)->type = LEVEL_TYPE_ONE;
+    ((Level *)result.data)->map = map_load("data/maps/map_0.csv");
 #if defined(AC_DEBUG)
     trace_created("LEVEL", "One");
 #endif
@@ -37,11 +40,14 @@ void one_level_draw(const Level *const level) {
 }
 
 void one_level_destroy(Level *level) {
-  void *ptr = level;
-  memory_free_container(&ptr);
+  if (level != NULL) {
+    map_unload(level->map);
+    void *ptr = level;
+    memory_free_container(&ptr);
 #if defined(AC_DEBUG)
-  trace_destroyed("LEVEL", "One");
+    trace_destroyed("LEVEL", "One");
 #endif
+  }
 }
 
 LevelType one_level_next(void) { return _nextType; }

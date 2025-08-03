@@ -2,6 +2,7 @@
 #define AC_LEVEL_H
 
 #include "config.h"
+#include "map.h"
 #include "memory.h"
 
 AC typedef enum {
@@ -12,6 +13,7 @@ AC typedef enum {
 
 AC typedef struct {
   LevelType type;
+  Map *map;
 } Level;
 
 #if defined(__cplusplus)

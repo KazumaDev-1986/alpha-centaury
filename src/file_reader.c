@@ -39,7 +39,8 @@ FileReader file_data(const char *fileName) {
     if (_has_error_read_lines(text, &(fileReader.map))) {
       fileReader.errorCode = ERROR_CODE_FILE_NOT_VALID;
 #if defined(AC_DEBUG)
-      trace_map_size_exceeds(fileName);
+      trace_map_size_exceeds(fileName, fileReader.map.height,
+                             fileReader.map.width);
 #endif
     } else {
       fileReader.errorCode = ERROR_CODE_OK;
@@ -63,7 +64,7 @@ static void _init_file_reader(FileReader *const fileReader, ErrorCode code) {
   }
 
   memset(fileReader->map.buffer, AC_EMPTY_TOKEN,
-         AC_BUFFER_SIZE * sizeof(int16_t));
+         AC_MAX_BUFFER_SIZE * sizeof(int16_t));
   fileReader->map.height = 0;
   fileReader->map.width = 0;
   fileReader->errorCode = code;
@@ -101,7 +102,7 @@ static bool _has_error_read_token(char *line, Map *map) {
     uint16_t j = 0;
     while (!hasError && token != NULL) {
       size_t index = map->height * map->width + j++;
-      if (index >= AC_BUFFER_SIZE) {
+      if (index >= AC_MAX_BUFFER_SIZE) {
         hasError = true;
         break;
       }
@@ -119,7 +120,7 @@ static bool _has_error_read_token(char *line, Map *map) {
 }
 
 static bool _has_error_buffer_size(const Map *const map) {
-  return map != NULL ? (map->width * map->height) <= AC_BUFFER_SIZE : true;
+  return map != NULL ? (map->width * map->height) >= AC_MAX_BUFFER_SIZE : true;
 }
 
 static char *_strtok(char *str, char *delim, char **context) {

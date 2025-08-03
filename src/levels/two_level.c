@@ -1,3 +1,4 @@
+#include <stdlib.h>
 
 #include "../include/level.h"
 #include "../include/memory.h"
@@ -23,6 +24,7 @@ Result two_level_create(void) {
   if (result.code == ERROR_CODE_OK) {
     _reset_variables();
     ((Level *)result.data)->type = LEVEL_TYPE_TWO;
+    ((Level *)result.data)->map = map_load("data/maps/map_1.csv");
 #if defined(AC_DEBUG)
     trace_created("LEVEL", "Two");
 #endif
@@ -34,15 +36,21 @@ Result two_level_create(void) {
 void two_level_update(Level *const level) { _keyboard_events(); }
 
 void two_level_draw(const Level *const level) {
-  ClearBackground(_backgroundColor);
+  if (level != NULL) {
+    ClearBackground(_backgroundColor);
+    map_draw(level->map);
+  }
 }
 
 void two_level_destroy(Level *level) {
-  void *ptr = level;
-  memory_free_container(&ptr);
+  if (level != NULL) {
+    map_unload(level->map);
+    void *ptr = level;
+    memory_free_container(&ptr);
 #if defined(AC_DEBUG)
-  trace_destroyed("LEVEL", "Two");
+    trace_destroyed("LEVEL", "Two");
 #endif
+  }
 }
 
 LevelType two_level_next(void) { return _nextType; }
