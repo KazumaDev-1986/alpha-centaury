@@ -2,6 +2,9 @@
 #define AC_TYPES_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
+#include "config.h"
 
 typedef struct {
   uint16_t x;
@@ -12,5 +15,16 @@ typedef struct {
   uint32_t x;
   uint32_t y;
 } ui32Point;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+AC bool check_equal_points_ui16(ui16Point a, ui16Point b);
+AC bool check_equal_points_ui32(ui32Point a, ui32Point b);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
