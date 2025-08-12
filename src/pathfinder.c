@@ -65,11 +65,11 @@ Pathfinder *pathfinder_create(const Map *const map, ui16Point start,
 // Static functions implementation.
 // *************************************************
 static void _check_point_by_index(ui16Point point, size_t index) {
-  Node *tmp = _grid[index];
-  if (!tmp->inCloseSet && !tmp->inOpenSet && tmp->value != 0) {
-    _node_calculate_distance(tmp);
-    _openSet_add_node(tmp);
-  }
+  // Node *tmp = _grid[index];
+  // if (!tmp->inCloseSet && !tmp->inOpenSet && tmp->value != 0) {
+  //   _node_calculate_distance(tmp);
+  //   _openSet_add_node(tmp);
+  // }
 }
 
 static void _node_evaluate(Node *const node) {
@@ -216,7 +216,7 @@ static Node *_node_create(uint16_t value, ui16Point point) {
   if (node != NULL) {
     memset(node, 0, sizeof(Node));
     memcpy(&(node->point), &point, sizeof(ui16Point));
-    node->value = value;
+    // node->value = value;
   }
 
   return node;
