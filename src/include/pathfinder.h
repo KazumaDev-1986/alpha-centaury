@@ -6,26 +6,7 @@
 #include "config.h"
 #include "map.h"
 #include "types.h"
-
-typedef struct Node {
-  // Point.
-  ui16Point point;
-
-  // Integers.
-  uint16_t value;
-
-  // Manhattan.
-  uint32_t realCost;
-  uint32_t heuristicCost;
-  uint32_t totalCost;
-
-  // Flag.
-  bool inOpenSet;
-  bool inCloseSet;
-
-  // Parent.
-  struct Node *parent;
-} Node;
+#include "map.h"
 
 typedef struct {
   uint32_t *path;

@@ -16,6 +16,25 @@ typedef struct {
   uint32_t y;
 } ui32Point;
 
+
+typedef struct Node {
+  // Point.
+  ui16Point point;
+
+  // Functions.
+  uint32_t realCost;
+  uint32_t heuristicCost;
+  uint32_t totalCost;
+
+  // Flags.
+  bool walkable;
+  bool inOpenSet;
+  bool inCloseSet;
+
+  // Parent.
+  struct Node *parent;
+}Node;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
