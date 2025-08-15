@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-typedef int (*HeapCompare)(void *const , void *const);
+typedef int (*HeapCompare)(const void *const , const void *const);
 
 typedef struct {
   void **buffer;
@@ -26,8 +26,3 @@ void heap_destroy(Heap *heap);
 #endif
 
 #endif // AC_HEAP_H
-
-// 7, 10, 3, 8
-// parent = (i - 1) / 2
-// left = i * 2 + 1
-// right = i * 2 + 2

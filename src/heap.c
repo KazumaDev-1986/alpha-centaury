@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "include/heap_node.h"
+#include "include/heap.h"
 #include "include/memory.h"
 
 // *************************************************
@@ -63,8 +63,7 @@ void heap_destroy(Heap *heap) {
     if (heap->buffer != NULL) {
       memory_free_container((void **)&heap->buffer);
     }
-    void *tmp = heap;
-    memory_free_container(&tmp);
+    memory_free_container((void **)&heap);
   }
 }
 // *************************************************
@@ -72,8 +71,8 @@ void heap_destroy(Heap *heap) {
 // *************************************************
 void _swap(void **a, void **b) {
   void *tmp = *a;
-  *b = *a;
-  *a = tmp;
+  *a = *b;
+  *b = tmp;
 }
 
 void _heapifyUp(Heap *const heap) {
@@ -90,23 +89,30 @@ void _heapifyUp(Heap *const heap) {
 }
 
 void _heapifyDown(Heap *const heap) {
-
   HeapCompare cmp = heap->_cmp;
   size_t index = 0;
-  size_t leftIndex = (index * 2) + 1;
-  size_t rightIndex = (index * 2) + 2;
+  size_t evaluateIndex = index;
 
-  void *evalute = heap->buffer[index];
+  while (heap->size > 0) {
+    evaluateIndex = index;
+    size_t leftIndex = (index * 2) + 1;
+    size_t rightIndex = (index * 2) + 2;
 
-  if (leftIndex < heap->size && cmp(heap->buffer[leftIndex], evalute) < 0) {
-    evalute = heap->buffer[leftIndex];
-  }
+    if (leftIndex < heap->size &&
+        cmp(heap->buffer[leftIndex], heap->buffer[evaluateIndex]) < 0) {
+      evaluateIndex = leftIndex;
+    }
 
-  if (rightIndex < heap->size && cmp(heap->buffer[rightIndex], evalute) < 0) {
-    evalute = heap->buffer[rightIndex];
-  }
+    if (rightIndex < heap->size &&
+        cmp(heap->buffer[rightIndex], heap->buffer[evaluateIndex]) < 0) {
+      evaluateIndex = rightIndex;
+    }
 
-  if (cmp(heap->buffer[index], evalute) != 0) {
-    // TODO
+    if (index != evaluateIndex) {
+      _swap(&heap->buffer[index], &heap->buffer[evaluateIndex]);
+      index = evaluateIndex;
+    } else {
+      break;
+    }
   }
 }
