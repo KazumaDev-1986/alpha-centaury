@@ -1,28 +1,33 @@
-#ifndef AC_HEAP_NODE_H
-#define AC_HEAP_NODE_H
+#ifndef AC_HEAP_H
+#define AC_HEAP_H
 
 #include <stddef.h>
 
-#include "config.h"
-#include "types.h"
+typedef int (*HeapCompare)(void *const , void *const);
 
 typedef struct {
-  Node **buffer;
+  void **buffer;
   size_t size;
   size_t capacity;
-} HeapNode;
+  HeapCompare _cmp;
+} Heap;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-AC HeapNode *heap_node_create(size_t size);
-AC void heap_node_insert(HeapNode *const heapNode, Node *node);
-AC Node *heap_node_get_min(HeapNode *const heapNode);
-AC void heap_node_destroy(HeapNode *heapNode);
+Heap *heap_create(size_t capacity, HeapCompare cmp);
+void heap_insert(Heap *const heap, void *ptr);
+void *heap_get_min(Heap *const heap);
+void heap_destroy(Heap *heap);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif  // AC_HEAP_NODE_H
+#endif // AC_HEAP_H
+
+// 7, 10, 3, 8
+// parent = (i - 1) / 2
+// left = i * 2 + 1
+// right = i * 2 + 2
