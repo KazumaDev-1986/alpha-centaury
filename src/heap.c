@@ -7,15 +7,17 @@
 // Static functions definition.
 // *************************************************
 
-void _swap(void **a, void **b);
-void _heapifyUp(Heap *const heap);
-void _heapifyDown(Heap *const heap);
+static void _swap(void **a, void **b);
+static void _heapifyUp(Heap *const heap, size_t index);
+static void _heapifyDown(Heap *const heap);
 
 // *************************************************
 // Public functions implementation.
 // *************************************************
 Heap *heap_create(size_t capacity, HeapCompare cmp) {
   Heap *heap = NULL;
+
+  if (cmp == NULL) return heap;
 
   Result result = memory_make_alloc(sizeof(Heap));
   if (result.code == ERROR_CODE_OK) {
@@ -27,8 +29,7 @@ Heap *heap_create(size_t capacity, HeapCompare cmp) {
       heap->capacity = capacity;
       heap->_cmp = cmp;
     } else {
-      void *tmp = heap;
-      memory_free_container(&tmp);
+      memory_free_container((void **)&heap);
       heap = NULL;
     }
   }
@@ -40,7 +41,7 @@ void heap_insert(Heap *const heap, void *ptr) {
   if (heap != NULL && heap->size < heap->capacity) {
     size_t index = heap->size;
     heap->buffer[index] = ptr;
-    _heapifyUp(heap);
+    _heapifyUp(heap, heap->size);
     ++heap->size;
   }
 }
@@ -69,14 +70,13 @@ void heap_destroy(Heap *heap) {
 // *************************************************
 // Static functions implementation.
 // *************************************************
-void _swap(void **a, void **b) {
+static void _swap(void **a, void **b) {
   void *tmp = *a;
   *a = *b;
   *b = tmp;
 }
 
-void _heapifyUp(Heap *const heap) {
-  size_t index = heap->size;
+static void _heapifyUp(Heap *const heap, size_t index) {
   HeapCompare cmp = heap->_cmp;
   while (index > 0) {
     size_t parent = (index - 1) / 2;
@@ -88,7 +88,7 @@ void _heapifyUp(Heap *const heap) {
   }
 }
 
-void _heapifyDown(Heap *const heap) {
+static void _heapifyDown(Heap *const heap) {
   HeapCompare cmp = heap->_cmp;
   size_t index = 0;
   size_t evaluateIndex = index;
