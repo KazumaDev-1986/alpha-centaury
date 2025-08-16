@@ -20,7 +20,8 @@ typedef struct {
 typedef struct Node {
   // Point.
   ui16Point point;
-
+  int32_t value;
+  
   // Functions.
   uint32_t realCost;
   uint32_t heuristicCost;

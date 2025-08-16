@@ -17,7 +17,8 @@ static void _heapifyDown(Heap *const heap);
 Heap *heap_create(size_t capacity, HeapCompare cmp) {
   Heap *heap = NULL;
 
-  if (cmp == NULL) return heap;
+  if (cmp == NULL)
+    return heap;
 
   Result result = memory_make_alloc(sizeof(Heap));
   if (result.code == ERROR_CODE_OK) {
@@ -46,7 +47,7 @@ void heap_insert(Heap *const heap, void *ptr) {
   }
 }
 
-void *heap_get_min(Heap *const heap) {
+void *heap_get(Heap *const heap) {
   void *ptr = NULL;
 
   if (heap != NULL && heap->size > 0) {

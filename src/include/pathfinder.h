@@ -1,23 +1,27 @@
 #ifndef AC_PATHFINDER_H
 #define AC_PATHFINDER_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include "config.h"
 #include "map.h"
 #include "types.h"
-#include "map.h"
 
 typedef struct {
-  uint32_t *path;
+  ui32Point *array;
+  size_t size;
 } Pathfinder;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-AC Pathfinder *pathfinder_create(const Map *const map, ui16Point start,
-                                 ui16Point end);
+AC Pathfinder *pathfinder_create(const Map **const map);
+
+AC void pathfinder_search(ui32Point start, ui32Point end);
+
+AC void pathfinder_destroy(Pathfinder *pathfinder);
 
 #if defined(__cplusplus)
 }
