@@ -16,7 +16,7 @@ typedef struct {
 extern "C" {
 #endif
 
-AC FileReader file_data(const char *fileName);
+AC FileReader file_reader_get_map(const char *fileName);
 
 #if defined(__cplusplus)
 }

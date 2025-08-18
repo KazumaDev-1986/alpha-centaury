@@ -11,7 +11,7 @@
 // *************************************************
 AC Map *map_load(const char *fileName) {
   Map *map = NULL;
-  FileReader fileReader = file_data(fileName);
+  FileReader fileReader = file_reader_get_map(fileName);
   if (fileReader.errorCode != ERROR_CODE_OK) {
     return map;
   }

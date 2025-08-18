@@ -3,9 +3,7 @@
 #define _POSIX_C_SOURCE 200809L
 #endif
 
-#include <memory.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "include/config.h"
@@ -30,7 +28,7 @@ static char *_strtok(char *str, char *delim, char **context);
 // *************************************************
 // Public functions implementation.
 // *************************************************
-FileReader file_data(const char *fileName) {
+FileReader file_reader_get_map(const char *fileName) {
   FileReader fileReader = {0};
   _init_file_reader(&fileReader, ERROR_CODE_UNDEFINED);
 
@@ -107,7 +105,11 @@ static bool _has_error_read_token(char *line, Map *map) {
         break;
       }
       int16_t *tmp = &map->buffer[index];
-      *tmp = TextToInteger(token);
+      if (strcmp(token, "-1") == 0) {
+        *tmp = -1;
+      } else {
+        *tmp = TextToInteger(token);
+      }
       token = _strtok(NULL, ",", &context);
       if (map->height == 0) {
         map->width += 1;
@@ -125,7 +127,7 @@ static bool _has_error_buffer_size(const Map *const map) {
 
 static char *_strtok(char *str, char *delim, char **context) {
   char *ptr = NULL;
-  if (str != NULL && delim != NULL && context != NULL) {
+  if (delim != NULL && context != NULL) {
 #if defined(__WIN32) || defined(_WIN64)
     ptr = strtok_s(str, delim, context);
 #else
