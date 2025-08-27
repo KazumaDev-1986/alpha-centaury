@@ -23,4 +23,4 @@
 #define AC_COLOR_6 0x713F52FF
 #define AC_COLOR_7 0xBB474FFF
 
-#endif  // AC_CONFIG_H
+#endif // AC_CONFIG_H

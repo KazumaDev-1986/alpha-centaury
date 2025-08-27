@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-typedef int (*HeapCompare)(const void *const , const void *const);
+typedef int (*HeapCompare)(const void *const, const void *const);
 
 typedef struct {
   void **buffer;
@@ -19,7 +19,7 @@ extern "C" {
 Heap *heap_create(size_t capacity, HeapCompare cmp);
 void heap_insert(Heap *const heap, void *ptr);
 void *heap_get(Heap *const heap);
-void heap_destroy(Heap *heap);
+void heap_destroy(Heap **heap);
 
 #if defined(__cplusplus)
 }

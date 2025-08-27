@@ -60,12 +60,12 @@ void *heap_get(Heap *const heap) {
   return ptr;
 }
 
-void heap_destroy(Heap *heap) {
-  if (heap != NULL) {
-    if (heap->buffer != NULL) {
-      memory_free_container((void **)&heap->buffer);
+void heap_destroy(Heap **heap) {
+  if (heap && *heap) {
+    if ((*heap)->buffer != NULL) {
+      memory_free_container((void **)&(*heap)->buffer);
     }
-    memory_free_container((void **)&heap);
+    memory_free_container((void **)heap);
   }
 }
 // *************************************************

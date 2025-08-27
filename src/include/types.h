@@ -1,8 +1,8 @@
 #ifndef AC_TYPES_H
 #define AC_TYPES_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "config.h"
 
@@ -15,26 +15,6 @@ typedef struct {
   uint32_t x;
   uint32_t y;
 } ui32Point;
-
-
-typedef struct Node {
-  // Point.
-  ui16Point point;
-  int32_t value;
-  
-  // Functions.
-  uint32_t realCost;
-  uint32_t heuristicCost;
-  uint32_t totalCost;
-
-  // Flags.
-  bool walkable;
-  bool inOpenSet;
-  bool inCloseSet;
-
-  // Parent.
-  struct Node *parent;
-}Node;
 
 #if defined(__cplusplus)
 extern "C" {
