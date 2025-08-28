@@ -29,6 +29,7 @@ Pathfinder *pathfinder_create(const Map *const map) {
     pathfinder->openSet = heap_create(capacity, _cmp);
     if (pathfinder->openSet) {
       hasError = _initialize_square_map(pathfinder->_squareMap, map);
+      pathfinder->_squreMapCount = capacity;  // TODO: Fix this line.
     } else {
       hasError = true;
     }

@@ -22,6 +22,7 @@ typedef struct {
 typedef struct {
   Heap *openSet;
   Square _squareMap[AC_MAX_BUFFER_SIZE];
+  size_t _squreMapCount;
 
 } Pathfinder;
 
