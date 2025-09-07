@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "include/heap.h"
 #include "include/memory.h"
@@ -17,8 +18,7 @@ static void _heapifyDown(Heap *const heap);
 Heap *heap_create(size_t capacity, HeapCompare cmp) {
   Heap *heap = NULL;
 
-  if (cmp == NULL)
-    return heap;
+  if (cmp == NULL) return heap;
 
   Result result = memory_make_alloc(sizeof(Heap));
   if (result.code == ERROR_CODE_OK) {
@@ -68,6 +68,17 @@ void heap_destroy(Heap **heap) {
     memory_free_container((void **)heap);
   }
 }
+
+void heap_reset_buffer(Heap *const heap) {
+  // memset(heap->buffer, 0, sizeof(void *) * heap->capacity);
+
+  // for (size_t i = 0; i < heap->size; ++i) {
+  //   heap->buffer[i] = NULL;
+  // }
+  // heap->buffer[0] = NULL;
+  heap->size = 0;
+}
+
 // *************************************************
 // Static functions implementation.
 // *************************************************

@@ -48,6 +48,8 @@ extern "C" {
 AC Pathfinder *pathfinder_create(const Map *const map);
 AC Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
                              ui16Point end);
+
+AC void pathfider_reset(Pathfinder *const pathfinder);
 AC void pathfinder_destroy(Pathfinder **pathfinder);
 
 #if defined(__cplusplus)

@@ -34,7 +34,7 @@ endif
 ifdef RELEASE
 	CFLAGS += -O3 -march=native
 else
-	CFLAGS += -pedantic -g -fsanitize=address 
+	CFLAGS += -pedantic -g #-fsanitize=address 
 endif
 
 CFLAGS += -std=c17
