@@ -8,7 +8,14 @@
 #include "map.h"
 #include "types.h"
 
-typedef struct {
+typedef enum {
+  SQUARE_DIRECTION_UP = 0,
+  SQUARE_DIRECTION_RIGHT,
+  SQUARE_DIRECTION_DOWN,
+  SQUARE_DIRECTION_LEFT,
+} SquareDirectionType;
+
+typedef struct Square {
   uint16_t x;
   uint16_t y;
   uint16_t value;
@@ -17,13 +24,21 @@ typedef struct {
   uint32_t heuristicCost;
   uint32_t totalCost;
 
+  bool inOpenSet;
+  bool inCloseSet;
+  bool walkable;
+
+  struct Square *parent;
+
 } Square;
 
 typedef struct {
   Heap *openSet;
   Square _squareMap[AC_MAX_BUFFER_SIZE];
-  size_t _squreMapCount;
+  size_t _squareMapWidth;
+  size_t _squareMapHeight;
 
+  ui16Point _end;
 } Pathfinder;
 
 #if defined(__cplusplus)
@@ -31,8 +46,8 @@ extern "C" {
 #endif
 
 AC Pathfinder *pathfinder_create(const Map *const map);
-AC void pathfinder_search(Pathfinder *const pathfinder, ui32Point start,
-                          ui32Point end);
+AC Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
+                             ui16Point end);
 AC void pathfinder_destroy(Pathfinder **pathfinder);
 
 #if defined(__cplusplus)

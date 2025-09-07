@@ -22,6 +22,7 @@ extern "C" {
 
 AC bool check_equal_points_ui16(ui16Point a, ui16Point b);
 AC bool check_equal_points_ui32(ui32Point a, ui32Point b);
+AC uint32_t manhattan_distance_ui16(ui16Point a, ui16Point b);
 
 #if defined(__cplusplus)
 }
