@@ -1,6 +1,5 @@
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "include/config.h"
@@ -27,6 +26,8 @@ static void _update_and_insert_openSet(Pathfinder *const pathfinder,
 static void _evaluate_square_by_direction(Pathfinder *const pathfinder,
                                           ui16Point parentPoint,
                                           SquareDirectionType type);
+
+static Square _build_empty_square(uint16_t x, uint16_t y, int16_t value);
 
 // *************************************************
 // Public functions implementation.
@@ -67,13 +68,9 @@ Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
   Square *currentSquare = heap_get(pathfinder->openSet);
   memcpy(&pathfinder->_end, &end, sizeof(end));
 
-  printf(">> heap->size: %zu \n", pathfinder->openSet->size);
-
   while (currentSquare != NULL) {
-    // Agregar a closeSet
     currentSquare->inCloseSet = true;
 
-    // Verificar si es end.
     ui16Point currentPoint = (ui16Point){
         .x = currentSquare->x,
         .y = currentSquare->y,
@@ -82,10 +79,7 @@ Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
       break;
     }
 
-    // si no. Evaluar vecinos y agregarlos a openSet
     _evaluate_square_neighbours(pathfinder, currentPoint);
-
-    // obtener el nuevo Square
     currentSquare = heap_get(pathfinder->openSet);
   }
 
@@ -94,27 +88,25 @@ Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
 
 AC void pathfider_reset(Pathfinder *const pathfinder) {
   if (pathfinder) {
-    for (size_t i = 0; i < pathfinder->_squareMapHeight; ++i) {
-      for (size_t j = 0; j < pathfinder->_squareMapWidth; ++j) {
-        size_t index = i * pathfinder->_squareMapWidth + j;
-        pathfinder->_squareMap[index].realCost = 0;
-        pathfinder->_squareMap[index].heuristicCost = 0;
-        pathfinder->_squareMap[index].totalCost = 0;
-
-        pathfinder->_squareMap[index].inOpenSet = false;
-        pathfinder->_squareMap[index].inCloseSet = false;
-      }
+    size_t total = pathfinder->_squareMapWidth * pathfinder->_squareMapHeight;
+    for (size_t index = 0; index < total; ++index) {
+      pathfinder->_squareMap[index].realCost = 0;
+      pathfinder->_squareMap[index].heuristicCost = 0;
+      pathfinder->_squareMap[index].totalCost = 0;
+      pathfinder->_squareMap[index].inOpenSet = false;
+      pathfinder->_squareMap[index].inCloseSet = false;
     }
+
     heap_reset_buffer(pathfinder->openSet);
   }
 }
 
-void pathfinder_destroy(Pathfinder **pathfinder) {
-  if (pathfinder && *pathfinder) {
-    if ((*pathfinder)->openSet) {
-      heap_destroy(&(*pathfinder)->openSet);
+void pathfinder_destroy(Pathfinder **ptrPathfinder) {
+  if (ptrPathfinder && *ptrPathfinder) {
+    if ((*ptrPathfinder)->openSet) {
+      heap_destroy(&(*ptrPathfinder)->openSet);
     }
-    memory_free_container((void **)pathfinder);
+    memory_free_container((void **)ptrPathfinder);
   }
 }
 // *************************************************
@@ -137,18 +129,8 @@ static void _initialize_square_map(Pathfinder *const pathfinder,
   for (uint16_t i = 0; i < map->height; ++i) {
     for (uint16_t j = 0; j < map->width; ++j) {
       size_t index = i * map->width + j;
-      Square square = (Square){
-          .x = j,
-          .y = i,
-          .value = map->buffer[index],
-          .realCost = 0,
-          .heuristicCost = 0,
-          .totalCost = 0,
-          .inOpenSet = false,
-          .inCloseSet = false,
-          .walkable = map->buffer[index] != -1,
-          .parent = NULL,
-      };
+      int16_t value = map->buffer[index];
+      Square square = _build_empty_square(j, i, value);
       pathfinder->_squareMap[index] = square;
     }
   }
@@ -219,18 +201,18 @@ static void _evaluate_square_by_direction(Pathfinder *const pathfinder,
   size_t width = pathfinder->_squareMapWidth;
 
   switch (type) {
-    case SQUARE_DIRECTION_UP:
-      index = (parentPoint.y - 1) * width + parentPoint.x;
-      break;
-    case SQUARE_DIRECTION_RIGHT:
-      index = parentPoint.y * width + (parentPoint.x + 1);
-      break;
-    case SQUARE_DIRECTION_DOWN:
-      index = (parentPoint.y + 1) * width + parentPoint.x;
-      break;
-    case SQUARE_DIRECTION_LEFT:
-      index = parentPoint.y * width + (parentPoint.x - 1);
-      break;
+  case SQUARE_DIRECTION_UP:
+    index = (parentPoint.y - 1) * width + parentPoint.x;
+    break;
+  case SQUARE_DIRECTION_RIGHT:
+    index = parentPoint.y * width + (parentPoint.x + 1);
+    break;
+  case SQUARE_DIRECTION_DOWN:
+    index = (parentPoint.y + 1) * width + parentPoint.x;
+    break;
+  case SQUARE_DIRECTION_LEFT:
+    index = parentPoint.y * width + (parentPoint.x - 1);
+    break;
   }
 
   Square *currentSquare = &pathfinder->_squareMap[index];
@@ -239,4 +221,19 @@ static void _evaluate_square_by_direction(Pathfinder *const pathfinder,
   if (!currentSquare->inCloseSet && currentSquare->walkable) {
     _update_and_insert_openSet(pathfinder, currentSquare, parentSquare);
   }
+}
+
+static Square _build_empty_square(uint16_t x, uint16_t y, int16_t value) {
+  return (Square){
+      .x = x,
+      .y = y,
+      .value = value,
+      .realCost = 0,
+      .heuristicCost = 0,
+      .totalCost = 0,
+      .inOpenSet = false,
+      .inCloseSet = false,
+      .walkable = value != -1, // TODO: Create function by value
+      .parent = NULL,
+  };
 }

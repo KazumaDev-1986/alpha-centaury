@@ -18,7 +18,8 @@ static void _heapifyDown(Heap *const heap);
 Heap *heap_create(size_t capacity, HeapCompare cmp) {
   Heap *heap = NULL;
 
-  if (cmp == NULL) return heap;
+  if (cmp == NULL)
+    return heap;
 
   Result result = memory_make_alloc(sizeof(Heap));
   if (result.code == ERROR_CODE_OK) {
@@ -60,24 +61,16 @@ void *heap_get(Heap *const heap) {
   return ptr;
 }
 
-void heap_destroy(Heap **heap) {
-  if (heap && *heap) {
-    if ((*heap)->buffer != NULL) {
-      memory_free_container((void **)&(*heap)->buffer);
+void heap_destroy(Heap **ptrHeap) {
+  if (ptrHeap && *ptrHeap) {
+    if ((*ptrHeap)->buffer != NULL) {
+      memory_free_container((void **)&(*ptrHeap)->buffer);
     }
-    memory_free_container((void **)heap);
+    memory_free_container((void **)ptrHeap);
   }
 }
 
-void heap_reset_buffer(Heap *const heap) {
-  // memset(heap->buffer, 0, sizeof(void *) * heap->capacity);
-
-  // for (size_t i = 0; i < heap->size; ++i) {
-  //   heap->buffer[i] = NULL;
-  // }
-  // heap->buffer[0] = NULL;
-  heap->size = 0;
-}
+void heap_reset_buffer(Heap *const heap) { heap->size = 0; }
 
 // *************************************************
 // Static functions implementation.

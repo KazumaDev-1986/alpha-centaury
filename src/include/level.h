@@ -23,13 +23,13 @@ extern "C" {
 AC Result one_level_create(void);
 AC void one_level_update(Level *const level);
 AC void one_level_draw(const Level *const level);
-AC void one_level_destroy(Level *level);
+AC void one_level_destroy(Level **ptrLevel);
 AC LevelType one_level_next(void);
 
 AC Result two_level_create(void);
 AC void two_level_update(Level *const level);
 AC void two_level_draw(const Level *const level);
-AC void two_level_destroy(Level *level);
+AC void two_level_destroy(Level **ptrLevel);
 AC LevelType two_level_next(void);
 
 #if defined(__cplusplus)

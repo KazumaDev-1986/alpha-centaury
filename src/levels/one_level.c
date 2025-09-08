@@ -39,11 +39,10 @@ void one_level_draw(const Level *const level) {
   ClearBackground(_backgroundColor);
 }
 
-void one_level_destroy(Level *level) {
-  if (level != NULL) {
-    map_unload(level->map);
-    void *ptr = level;
-    memory_free_container(&ptr);
+void one_level_destroy(Level **ptrLevel) {
+  if (ptrLevel && *ptrLevel) {
+    map_unload(&(*ptrLevel)->map);
+    memory_free_container((void **)ptrLevel);
 #if defined(AC_DEBUG)
     trace_destroyed("LEVEL", "One");
 #endif

@@ -19,7 +19,7 @@ extern "C" {
 Heap *heap_create(size_t capacity, HeapCompare cmp);
 void heap_insert(Heap *const heap, void *ptr);
 void *heap_get(Heap *const heap);
-void heap_destroy(Heap **heap);
+void heap_destroy(Heap **ptrHeap);
 void heap_reset_buffer(Heap *const heap);
 
 #if defined(__cplusplus)

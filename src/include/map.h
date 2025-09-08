@@ -18,7 +18,7 @@ extern "C" {
 
 AC Map *map_load(const char *fileName);
 AC void map_draw(const Map *const map);
-AC void map_unload(Map *map);
+AC void map_unload(Map **ptr);
 
 #if defined(__cplusplus)
 }

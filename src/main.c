@@ -46,7 +46,7 @@ int main(void) {
 
   Pathfinder *pathfinder = pathfinder_create(map);
   if (!pathfinder) {
-    map_unload(map);
+    map_unload(&map);
     return 0;
   }
 
@@ -54,7 +54,7 @@ int main(void) {
   ui16Point endPoint = (ui16Point){.x = 6, .y = 1};
   ui16Point endPoint1 = (ui16Point){.x = 5, .y = 6};
 
-  Square *square = pathfinder_search(pathfinder, startPoint, endPoint1);
+  Square *square = pathfinder_search(pathfinder, startPoint, endPoint);
   if (!square) {
     TraceLog(LOG_DEBUG, "Square is NULL.");
   }
@@ -64,7 +64,6 @@ int main(void) {
   if (!square) {
     TraceLog(LOG_DEBUG, "Square0 is NULL.");
   }
-
 
   for (Square *tmp = square; tmp != NULL; tmp = tmp->parent) {
     TraceLog(LOG_DEBUG, "x: %d, y: %d", tmp->x, tmp->y);
@@ -82,7 +81,7 @@ int main(void) {
   printf("\n");
 
   pathfinder_destroy(&pathfinder);
-  map_unload(map);
+  map_unload(&map);
 
   return 0;
 }

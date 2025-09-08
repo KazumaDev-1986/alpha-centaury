@@ -34,10 +34,9 @@ AC void map_draw(const Map *const map) {
   // TODO
 }
 
-AC void map_unload(Map *map) {
-  if (map != NULL) {
-    void *tmp = map;
-    memory_free_container(&tmp);
+AC void map_unload(Map **ptr) {
+  if (ptr && *ptr) {
+    memory_free_container((void **)ptr);
 
 #if defined(AC_DEBUG)
     trace_destroyed("Map", "");

@@ -42,11 +42,10 @@ void two_level_draw(const Level *const level) {
   }
 }
 
-void two_level_destroy(Level *level) {
-  if (level != NULL) {
-    map_unload(level->map);
-    void *ptr = level;
-    memory_free_container(&ptr);
+void two_level_destroy(Level **ptrLevel) {
+  if (ptrLevel && *ptrLevel) {
+    map_unload(&(*ptrLevel)->map);
+    memory_free_container((void **)ptrLevel);
 #if defined(AC_DEBUG)
     trace_destroyed("LEVEL", "Two");
 #endif

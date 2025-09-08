@@ -10,7 +10,7 @@
 // Static functions && variables definition.
 // *************************************************
 static void _init_window(void);
-static void _destroy_elements(Game *game);
+static void _destroy_elements(Game **ptrGame);
 static void _update_game(Game *const game);
 static void _draw_game(const Game *const game);
 static void _keyboard_events(Game *const game);
@@ -47,8 +47,8 @@ void game_run(Game *const game) {
   }
 }
 
-void game_destroy(Game *game) {
-  _destroy_elements(game);
+void game_destroy(Game **ptrGame) {
+  _destroy_elements(ptrGame);
   CloseWindow();
 }
 
@@ -63,11 +63,10 @@ static void _init_window(void) {
   SetTargetFPS(AC_SCREEN_FPS);
 }
 
-static void _destroy_elements(Game *game) {
-  if (game != NULL) {
-    _unload_screen(game);
-    void *tmp = game;
-    memory_free_container(&tmp);
+static void _destroy_elements(Game **ptrGame) {
+  if (ptrGame && *ptrGame) {
+    _unload_screen(*ptrGame);
+    memory_free_container((void **)ptrGame);
   }
 }
 

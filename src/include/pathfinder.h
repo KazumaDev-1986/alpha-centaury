@@ -18,7 +18,7 @@ typedef enum {
 typedef struct Square {
   uint16_t x;
   uint16_t y;
-  uint16_t value;
+  int16_t value;
 
   uint32_t realCost;
   uint32_t heuristicCost;
@@ -50,7 +50,7 @@ AC Square *pathfinder_search(Pathfinder *const pathfinder, ui16Point start,
                              ui16Point end);
 
 AC void pathfider_reset(Pathfinder *const pathfinder);
-AC void pathfinder_destroy(Pathfinder **pathfinder);
+AC void pathfinder_destroy(Pathfinder **ptrPathfinder);
 
 #if defined(__cplusplus)
 }

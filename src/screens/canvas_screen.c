@@ -101,11 +101,11 @@ static void _unload_level(Screen *const screen) {
     LevelType type = ((Level *)screen->content)->type;
     switch (type) {
     case LEVEL_TYPE_ONE:
-      one_level_destroy(screen->content);
+      one_level_destroy((Level **)&screen->content);
       screen->content = NULL;
       break;
     case LEVEL_TYPE_TWO:
-      two_level_destroy(screen->content);
+      two_level_destroy((Level **)&screen->content);
       screen->content = NULL;
       break;
     default:

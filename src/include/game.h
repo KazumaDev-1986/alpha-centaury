@@ -18,7 +18,7 @@ AC Result game_create(void);
 
 AC void game_run(Game *const game);
 
-AC void game_destroy(Game *game);
+AC void game_destroy(Game **ptrGame);
 
 #if defined(__cplusplus)
 }
