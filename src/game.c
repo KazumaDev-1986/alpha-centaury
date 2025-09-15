@@ -71,7 +71,7 @@ static void _destroy_elements(Game **ptrGame) {
 }
 
 static void _update_game(Game *const game) {
-  if (game != NULL) {
+  if (game) {
     ScreenType newScreen = _update_screen(game->currentScreen);
     _change_next_screen(game, newScreen);
     _keyboard_events(game);
@@ -79,7 +79,7 @@ static void _update_game(Game *const game) {
 }
 
 static void _draw_game(const Game *const game) {
-  if (game != NULL) {
+  if (game) {
     BeginDrawing();
     _draw_screen(game->currentScreen);
     EndDrawing();
@@ -93,7 +93,7 @@ static void _keyboard_events(Game *const game) {
 }
 
 static void _load_screen(Game *const game, ScreenType type) {
-  if (game != NULL) {
+  if (game) {
     Result result = {0};
 
     switch (type) {
@@ -114,7 +114,7 @@ static void _load_screen(Game *const game, ScreenType type) {
 }
 
 static void _unload_screen(Game *const game) {
-  if (game != NULL && game->currentScreen != NULL) {
+  if (game && game->currentScreen) {
     Screen *screen = game->currentScreen;
 
     switch (screen->type) {
@@ -133,7 +133,7 @@ static void _unload_screen(Game *const game) {
 
 static ScreenType _update_screen(Screen *const screen) {
   ScreenType nextScreenType = SCREEN_TYPE_UNDEFINED;
-  if (screen != NULL) {
+  if (screen) {
     switch (screen->type) {
     case SCREEN_TYPE_MENU:
       menu_screen_update(screen);
@@ -152,7 +152,7 @@ static ScreenType _update_screen(Screen *const screen) {
 }
 
 static void _draw_screen(const Screen *const screen) {
-  if (screen != NULL) {
+  if (screen) {
     switch (screen->type) {
     case SCREEN_TYPE_MENU:
       menu_screen_draw(screen);
@@ -167,7 +167,7 @@ static void _draw_screen(const Screen *const screen) {
 }
 
 static void _change_next_screen(Game *const game, ScreenType type) {
-  if (game != NULL && type != SCREEN_TYPE_UNDEFINED) {
+  if (game && type != SCREEN_TYPE_UNDEFINED) {
     _unload_screen(game);
     _load_screen(game, type);
   }

@@ -44,7 +44,7 @@ void menu_screen_draw(const Screen *const screen) {
 }
 
 void menu_screen_destroy(Screen *screen) {
-  if (screen != NULL) {
+  if (screen) {
     void *tmp = screen;
     memory_free_container(&tmp);
 #if defined(AC_DEBUG)

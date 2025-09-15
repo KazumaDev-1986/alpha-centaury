@@ -42,7 +42,7 @@ Result canvas_screen_create(void) {
 }
 
 void canvas_screen_update(Screen *const screen) {
-  if (screen != NULL) {
+  if (screen) {
     _keyboard_events();
     LevelType nextLevel = _update_level(screen->content);
     _change_next_level(screen, nextLevel);
@@ -50,13 +50,13 @@ void canvas_screen_update(Screen *const screen) {
 }
 
 void canvas_screen_draw(const Screen *const screen) {
-  if (screen != NULL) {
+  if (screen) {
     _draw_level(screen->content);
   }
 }
 
 void canvas_screen_destroy(Screen *screen) {
-  if (screen != NULL) {
+  if (screen) {
     _unload_level(screen);
     void *tmp = screen;
     memory_free_container(&tmp);
@@ -78,7 +78,7 @@ static void _keyboard_events(void) {
 }
 
 static void _load_level(Screen *const screen, LevelType type) {
-  if (screen != NULL) {
+  if (screen) {
     Result result = {0};
     switch (type) {
     case LEVEL_TYPE_ONE:
@@ -97,7 +97,7 @@ static void _load_level(Screen *const screen, LevelType type) {
   }
 }
 static void _unload_level(Screen *const screen) {
-  if (screen != NULL && screen->content != NULL) {
+  if (screen && screen->content) {
     LevelType type = ((Level *)screen->content)->type;
     switch (type) {
     case LEVEL_TYPE_ONE:
@@ -116,7 +116,7 @@ static void _unload_level(Screen *const screen) {
 static LevelType _update_level(Level *const level) {
   LevelType nextLevelType = LEVEL_TYPE_UNDEFINED;
 
-  if (level != NULL) {
+  if (level) {
     LevelType type = level->type;
     switch (type) {
     case LEVEL_TYPE_ONE:
@@ -136,7 +136,7 @@ static LevelType _update_level(Level *const level) {
 }
 
 static void _draw_level(const Level *const level) {
-  if (level != NULL) {
+  if (level) {
     LevelType type = level->type;
     switch (type) {
     case LEVEL_TYPE_ONE:
@@ -152,7 +152,7 @@ static void _draw_level(const Level *const level) {
 }
 
 static void _change_next_level(Screen *const screen, LevelType type) {
-  if (screen != NULL && type != LEVEL_TYPE_UNDEFINED) {
+  if (screen && type != LEVEL_TYPE_UNDEFINED) {
     _unload_level(screen);
     _load_level(screen, type);
   }

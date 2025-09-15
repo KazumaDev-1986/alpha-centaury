@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "../include/level.h"
 #include "../include/memory.h"
 
@@ -36,7 +34,7 @@ Result two_level_create(void) {
 void two_level_update(Level *const level) { _keyboard_events(); }
 
 void two_level_draw(const Level *const level) {
-  if (level != NULL) {
+  if (level) {
     ClearBackground(_backgroundColor);
     map_draw(level->map);
   }
