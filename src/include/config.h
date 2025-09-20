@@ -14,6 +14,9 @@
 #define AC_MAX_BUFFER_SIZE 256
 #define AC_TILE_SIZE 16
 
+#define AC_PACKAGE_TEXTURES_SIZE 1
+#define AC_PACKAGE_PATH_TEXTURE_TILE "./data/sprites/alpha-centaury-tiles.png"
+
 #define AC_COLOR_0 0xD1BFB0FF
 #define AC_COLOR_1 0x7A9C96FF
 #define AC_COLOR_2 0x486B7FFF

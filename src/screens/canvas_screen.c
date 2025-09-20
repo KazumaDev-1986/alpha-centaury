@@ -55,11 +55,10 @@ void canvas_screen_draw(const Screen *const screen) {
   }
 }
 
-void canvas_screen_destroy(Screen *screen) {
-  if (screen) {
-    _unload_level(screen);
-    void *tmp = screen;
-    memory_free_container(&tmp);
+void canvas_screen_destroy(Screen **ptrScreen) {
+  if (ptrScreen) {
+    _unload_level(*ptrScreen);
+    memory_free_container((void **)ptrScreen);
 #if defined(AC_DEBUG)
     trace_destroyed("SCREEN", "Canvas");
 #endif

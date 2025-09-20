@@ -43,10 +43,9 @@ void menu_screen_draw(const Screen *const screen) {
   ClearBackground(_backgroundColor);
 }
 
-void menu_screen_destroy(Screen *screen) {
-  if (screen) {
-    void *tmp = screen;
-    memory_free_container(&tmp);
+void menu_screen_destroy(Screen **ptrScreen) {
+  if (ptrScreen) {
+    memory_free_container((void **)ptrScreen);
 #if defined(AC_DEBUG)
     trace_destroyed("SCREEN", "Menu");
 #endif

@@ -3,8 +3,11 @@
 #include "include/config.h"
 #include "include/game.h"
 #include "include/memory.h"
+#include "include/package.h"
 #include "include/raylib.h"
 #include "include/screen.h"
+
+Package *globalPackage = NULL;
 
 // *************************************************
 // Static functions && variables definition.
@@ -27,13 +30,19 @@ Result game_create(void) {
   Result result = memory_make_alloc(sizeof(Game));
   if (result.code == ERROR_CODE_OK) {
     _init_window();
-    ((Game *)result.data)->currentScreen = NULL;
-    ((Game *)result.data)->isRunning = true;
-    _load_screen(result.data, SCREEN_TYPE_CANVAS);
-    if (((Game *)result.data)->currentScreen == NULL) {
-      void *tmp = result.data;
-      memory_free_container(&tmp);
-      result.data = NULL;
+
+    globalPackage = package_create();
+    if (globalPackage) {
+      ((Game *)result.data)->currentScreen = NULL;
+      ((Game *)result.data)->isRunning = true;
+      _load_screen(result.data, SCREEN_TYPE_CANVAS);
+      if (((Game *)result.data)->currentScreen == NULL) {
+        void *tmp = result.data;
+        memory_free_container(&tmp);
+        result.data = NULL;
+      }
+    } else {
+      memory_free_container((void **)result.data);
     }
   }
 
@@ -49,6 +58,7 @@ void game_run(Game *const game) {
 
 void game_destroy(Game **ptrGame) {
   _destroy_elements(ptrGame);
+  package_destroy(&globalPackage);
   CloseWindow();
 }
 
@@ -115,14 +125,12 @@ static void _load_screen(Game *const game, ScreenType type) {
 
 static void _unload_screen(Game *const game) {
   if (game && game->currentScreen) {
-    Screen *screen = game->currentScreen;
-
-    switch (screen->type) {
+    switch (game->currentScreen->type) {
     case SCREEN_TYPE_MENU:
-      menu_screen_destroy(screen);
+      menu_screen_destroy(&game->currentScreen);
       break;
     case SCREEN_TYPE_CANVAS:
-      canvas_screen_destroy(screen);
+      canvas_screen_destroy(&game->currentScreen);
       break;
     default:
       break;

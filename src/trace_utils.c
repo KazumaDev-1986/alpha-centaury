@@ -27,3 +27,7 @@ void trace_map_size_exceeds(const char *fileName, uint16_t height,
   TraceLog(LOG_DEBUG, ">> Error: Map size exceeds:'%s', h:'%d', w:'%d' .",
            fileName, height, width);
 }
+
+void trace_error_to_reservet_memory(const char *name) {
+  TraceLog(LOG_DEBUG, ">> Error: to reservet memory:'%s'", name);
+}
