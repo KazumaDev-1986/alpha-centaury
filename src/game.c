@@ -35,7 +35,7 @@ Result game_create(void) {
     if (globalPackage) {
       ((Game *)result.data)->currentScreen = NULL;
       ((Game *)result.data)->isRunning = true;
-      _load_screen(result.data, SCREEN_TYPE_CANVAS);
+      _load_screen(result.data, SCREEN_TYPE_MENU);
       if (((Game *)result.data)->currentScreen == NULL) {
         void *tmp = result.data;
         memory_free_container(&tmp);

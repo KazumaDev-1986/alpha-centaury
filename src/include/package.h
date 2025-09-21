@@ -9,16 +9,17 @@
 typedef enum {
   TEXTURE_TYPE_EMPTY = -1,
   TEXTURE_TYPE_GLOBAL_TILE = 0
-}TextureType;
+} TextureType;
 
 typedef struct {
   Texture *list;
   size_t size;
-}TextureList;
+} TextureList;
 
 typedef struct {
   TextureList textures;
-  
+  Color colors[AC_PALETTE_SIZE];
+
 } Package;
 
 #if defined(__cplusplus)
@@ -26,11 +27,12 @@ extern "C" {
 #endif
 
 AC Package *package_create(void);
-AC const Texture *package_get_texture_by_type(const Package *const package, TextureType type);
-AC void package_destroy(Package ** ptrPackage);
+AC const Texture *package_get_texture_by_type(const Package *const package,
+                                              TextureType type);
+AC void package_destroy(Package **ptrPackage);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif //AC_PACKAGE_H
+#endif  // AC_PACKAGE_H

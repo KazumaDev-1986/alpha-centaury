@@ -1,16 +1,19 @@
 #include "../include/level.h"
 #include "../include/memory.h"
+#include "../include/package.h"
 
 #if defined(AC_DEBUG)
 #include "../include/trace_utils.h"
 #endif
 
-static LevelType _nextType = LEVEL_TYPE_UNDEFINED;
-static Color _backgroundColor = {0};
+extern Package *globalPackage;
 
 // *************************************************
 // Static functions definition.
 // *************************************************
+static LevelType _nextType = LEVEL_TYPE_UNDEFINED;
+static Color _backgroundColor = {0};
+
 static void _reset_variables(void);
 static void _keyboard_events(void);
 
@@ -21,6 +24,7 @@ Result two_level_create(void) {
   Result result = memory_make_alloc(sizeof(Level));
   if (result.code == ERROR_CODE_OK) {
     _reset_variables();
+    _backgroundColor = globalPackage->colors[10];
     ((Level *)result.data)->type = LEVEL_TYPE_TWO;
     ((Level *)result.data)->map = map_load("data/maps/map_1.csv");
 #if defined(AC_DEBUG)
@@ -57,7 +61,7 @@ LevelType two_level_next(void) { return _nextType; }
 // *************************************************
 static void _reset_variables(void) {
   _nextType = LEVEL_TYPE_UNDEFINED;
-  _backgroundColor = GetColor(AC_COLOR_0);
+  _backgroundColor = (Color){0};
 }
 
 static void _keyboard_events(void) {

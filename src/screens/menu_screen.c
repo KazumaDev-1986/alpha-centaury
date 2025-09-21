@@ -1,12 +1,15 @@
 #include <stddef.h>
 
 #include "../include/memory.h"
+#include "../include/package.h"
 #include "../include/raylib.h"
 #include "../include/screen.h"
 
 #if defined(AC_DEBUG)
 #include "../include/trace_utils.h"
 #endif
+
+extern Package *globalPackage;
 
 // *************************************************
 // Static functions and variables definition.
@@ -20,6 +23,7 @@ static void _reset_variables(void);
 // Public functions implementation.
 // *************************************************
 Result menu_screen_create(void) {
+  _backgroundColor = globalPackage->colors[10];
   Result result = memory_make_alloc(sizeof(Screen));
   if (result.code == ERROR_CODE_OK) {
     _reset_variables();
@@ -45,6 +49,7 @@ void menu_screen_draw(const Screen *const screen) {
 
 void menu_screen_destroy(Screen **ptrScreen) {
   if (ptrScreen) {
+    _backgroundColor = (Color){0};
     memory_free_container((void **)ptrScreen);
 #if defined(AC_DEBUG)
     trace_destroyed("SCREEN", "Menu");
