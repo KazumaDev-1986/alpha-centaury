@@ -13,6 +13,8 @@ void trace_game_error(void);
 void trace_file_not_found(const char *fileName);
 void trace_map_size_exceeds(const char *fileName, uint16_t height, uint16_t width);
 void trace_error_to_reservet_memory(const char *name);
+void trace_load_data(const char *type, const char *name);
+void trace_unload_data(const char *type, const char *name);
 
 #if defined(__cplusplus)
 }

@@ -39,21 +39,17 @@ Package *package_create(void) {
   if (result.code == ERROR_CODE_OK) {
     package = result.data;
 
-    bool hasError = _load_textures(package);
+    bool hasErrorTextures = _load_textures(package);
+    bool hasErrorFonts = _load_fonts(package);
+    bool hasError = hasErrorTextures || hasErrorFonts;
+
     if (hasError) {
       _unload_package(&package);
     } else {
-      hasError = _load_fonts(package);
-      if (hasError) {
-        _unload_textures(package);
-        _unload_package(&package);
-      } else {
 #if defined(AC_DEBUG)
-        trace_created("global", "package");
+      trace_created("global", "package");
 #endif
-      }
     }
-
   } else {
 #if defined(AC_DEBUG)
     trace_error_to_reservet_memory("Package");
@@ -66,6 +62,7 @@ Package *package_create(void) {
 AC void package_destroy(Package **ptrPackage) {
   if (ptrPackage && *ptrPackage) {
     _unload_textures(*ptrPackage);
+    _unload_fonts(*ptrPackage);
     _unload_package(ptrPackage);
 #if defined(AC_DEBUG)
     trace_destroyed("global", "package");
@@ -98,6 +95,9 @@ static bool _load_textures(Package *const package) {
 
   for (size_t i = 0; i < index; ++i) {
     UnloadTexture(package->textures[i]);
+#if defined(AC_DEBUG)
+    trace_unload_data("texture", _texturePathList[i]);
+#endif
   }
 
   return hasError;
@@ -107,6 +107,9 @@ static void _unload_textures(Package *const package) {
   if (package) {
     for (size_t i = 0; i < AC_PACKAGE_TEXTURES_SIZE; ++i) {
       UnloadTexture(package->textures[i]);
+#if defined(AC_DEBUG)
+      trace_unload_data("texture", _texturePathList[i]);
+#endif
     }
   }
 }
@@ -116,6 +119,10 @@ static Texture _load_texture(const char *fileName) {
 
   if (FileExists(fileName)) {
     texture = LoadTexture(fileName);
+#if defined(AC_DEBUG)
+    trace_load_data("texture", fileName);
+#endif
+
   } else {
 #if defined(AC_DEBUG)
     trace_file_not_found(fileName);
@@ -131,7 +138,7 @@ static bool _load_fonts(Package *const package) {
 
   for (size_t i = 0; i < AC_PACKAGE_FONTS_SIZE && !hasError; ++i) {
     Font font = _load_font(_fontPathList[i]);
-    if (font.baseSize != 0) {
+    if (font.glyphCount != 0) {
       package->fonts[i] = font;
     } else {
       index = i;
@@ -141,6 +148,9 @@ static bool _load_fonts(Package *const package) {
 
   for (size_t i = 0; i < index; ++i) {
     UnloadFont(package->fonts[i]);
+#if defined(AC_DEBUG)
+    trace_unload_data("font", _fontPathList[i]);
+#endif
   }
 
   return hasError;
@@ -150,6 +160,9 @@ static Font _load_font(const char *fileName) {
   Font font = {0};
   if (FileExists(fileName)) {
     font = LoadFont(fileName);
+#if defined(AC_DEBUG)
+    trace_load_data("font", fileName);
+#endif
   } else {
 #if defined(AC_DEBUG)
     trace_file_not_found(fileName);
@@ -163,6 +176,9 @@ static void _unload_fonts(Package *const package) {
   if (package) {
     for (size_t i = 0; i < AC_PACKAGE_FONTS_SIZE; ++i) {
       UnloadFont(package->fonts[i]);
+#if defined(AC_DEBUG)
+      trace_unload_data("font", _fontPathList[i]);
+#endif
     }
   }
 }

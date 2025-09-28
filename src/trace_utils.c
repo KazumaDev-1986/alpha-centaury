@@ -31,3 +31,11 @@ void trace_map_size_exceeds(const char *fileName, uint16_t height,
 void trace_error_to_reservet_memory(const char *name) {
   TraceLog(LOG_DEBUG, ">> Error: to reservet memory:'%s'", name);
 }
+
+void trace_load_data(const char *type, const char *name) {
+  TraceLog(LOG_DEBUG, ">> load '%s' - '%s'", type, name);
+}
+
+void trace_unload_data(const char *type, const char *name) {
+  TraceLog(LOG_DEBUG, ">> unload '%s' - '%s'", type, name);
+}
