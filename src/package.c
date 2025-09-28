@@ -16,43 +16,42 @@ static const char *_texturePathList[] = {
     AC_PACKAGE_PATH_TEXTURE_TILE,
 };
 
-static const uint32_t _paletteColor[AC_PALETTE_SIZE] = {
-    AC_PALETTE_COLOR_DARK_CHARCOAL, AC_PALETTE_COLOR_EGGPLANT,
-    AC_PALETTE_COLOR_BEIGE,         AC_PALETTE_COLOR_SALMON,
-    AC_PALETTE_COLOR_PERIWINKLE,    AC_PALETTE_COLOR_SKY_BLUE,
-    AC_PALETTE_COLOR_MINT,          AC_PALETTE_COLOR_PINK,
-    AC_PALETTE_COLOR_SAGE,          AC_PALETTE_COLOR_LIGHT_GREEN,
-    AC_PALETTE_COLOR_LEMON,         AC_PALETTE_COLOR_PEACH_BEIGE,
-    AC_PALETTE_COLOR_APRICOT,       AC_PALETTE_COLOR_SOFT_YELLOW,
-    AC_PALETTE_COLOR_IVORY,         AC_PALETTE_COLOR_OFF_WHITE,
+static const char *_fontPathList[] = {
+    AC_PACKAGE_PATH_FONT_04B03,
 };
 
 static void _unload_package(Package **ptrPackage);
-static bool _load_textures(Package *const package);
-static void _unload_textures(Package *const package);
-static Texture _load_texture(const char *fileName);
 
-static void _load_colors(Package *const package);
+static bool _load_textures(Package *const package);
+static Texture _load_texture(const char *fileName);
+static void _unload_textures(Package *const package);
+
+static bool _load_fonts(Package *const package);
+static Font _load_font(const char *fileName);
+static void _unload_fonts(Package *const package);
 
 // *************************************************
 // Public functions implementation.
 // *************************************************
 Package *package_create(void) {
   Package *package = NULL;
-
   Result result = memory_make_alloc(sizeof(Package));
   if (result.code == ERROR_CODE_OK) {
     package = result.data;
 
     bool hasError = _load_textures(package);
     if (hasError) {
-      _unload_textures(package);
       _unload_package(&package);
     } else {
-      _load_colors(package);
+      hasError = _load_fonts(package);
+      if (hasError) {
+        _unload_textures(package);
+        _unload_package(&package);
+      } else {
 #if defined(AC_DEBUG)
-      trace_created("global", "package");
+        trace_created("global", "package");
 #endif
+      }
     }
 
   } else {
@@ -62,17 +61,6 @@ Package *package_create(void) {
   }
 
   return package;
-}
-
-AC const Texture *package_get_texture_by_type(const Package *const package,
-                                              TextureType type) {
-  Texture *texture = NULL;
-
-  if (package && package->textures.size < (size_t)type) {
-    texture = &package->textures.list[type];
-  }
-
-  return texture;
 }
 
 AC void package_destroy(Package **ptrPackage) {
@@ -96,25 +84,20 @@ static void _unload_package(Package **ptrPackage) {
 
 static bool _load_textures(Package *const package) {
   bool hasError = false;
-  package->textures = (TextureList){0};
+  size_t index = 0;
 
-  Result result = memory_make_alloc(sizeof(Texture) * AC_PACKAGE_TEXTURES_SIZE);
-  if (result.code == ERROR_CODE_OK) {
-    package->textures.list = result.data;
-    package->textures.size = 0;
-
-    // Load global sprite texture.
-    for (size_t i = 0; i < 1 && !hasError; ++i) {
-      Texture texture = _load_texture(_texturePathList[i]);
-      if (texture.width != 0) {
-        package->textures.list[0] = texture;
-        ++package->textures.size;
-      } else {
-        hasError = true;
-      }
+  for (size_t i = 0; i < 1 && !hasError; ++i) {
+    Texture texture = _load_texture(_texturePathList[i]);
+    if (texture.width != 0) {
+      package->textures[i] = texture;
+    } else {
+      index = i;
+      hasError = true;
     }
-  } else {
-    hasError = true;
+  }
+
+  for (size_t i = 0; i < index; ++i) {
+    UnloadTexture(package->textures[i]);
   }
 
   return hasError;
@@ -122,10 +105,9 @@ static bool _load_textures(Package *const package) {
 
 static void _unload_textures(Package *const package) {
   if (package) {
-    for (size_t i = 0; i < package->textures.size; ++i) {
-      UnloadTexture(package->textures.list[i]);
+    for (size_t i = 0; i < AC_PACKAGE_TEXTURES_SIZE; ++i) {
+      UnloadTexture(package->textures[i]);
     }
-    memory_free_container((void **)&package->textures);
   }
 }
 
@@ -143,8 +125,44 @@ static Texture _load_texture(const char *fileName) {
   return texture;
 }
 
-static void _load_colors(Package *const package) {
-  for (size_t i = 0; i < AC_PALETTE_SIZE; ++i) {
-    package->colors[i] = GetColor(_paletteColor[i]);
+static bool _load_fonts(Package *const package) {
+  bool hasError = false;
+  size_t index = 0;
+
+  for (size_t i = 0; i < AC_PACKAGE_FONTS_SIZE && !hasError; ++i) {
+    Font font = _load_font(_fontPathList[i]);
+    if (font.baseSize != 0) {
+      package->fonts[i] = font;
+    } else {
+      index = i;
+      hasError = true;
+    }
+  }
+
+  for (size_t i = 0; i < index; ++i) {
+    UnloadFont(package->fonts[i]);
+  }
+
+  return hasError;
+}
+
+static Font _load_font(const char *fileName) {
+  Font font = {0};
+  if (FileExists(fileName)) {
+    font = LoadFont(fileName);
+  } else {
+#if defined(AC_DEBUG)
+    trace_file_not_found(fileName);
+#endif
+  }
+
+  return font;
+}
+
+static void _unload_fonts(Package *const package) {
+  if (package) {
+    for (size_t i = 0; i < AC_PACKAGE_FONTS_SIZE; ++i) {
+      UnloadFont(package->fonts[i]);
+    }
   }
 }
